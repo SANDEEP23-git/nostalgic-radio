@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <meta
+        name="referrer"
+        content="strict-origin-when-cross-origin"
+    >
+    <title>
+        {% block title %}
+            Nostalgic Radio
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <!-- Main website content -->
+    {% block content %}
+    {% endblock %}
+
+
+    <!-- Main JavaScript -->
+    <!-- YouTube IFrame Player API -->
+
+<!-- Main JavaScript -->
+<script
+    src="{{ url_for('static', filename='js/main.js') }}"
+></script>
+
+<!-- Player JavaScript -->
+<script
+    src="{{ url_for('static', filename='js/theme.js') }}"
+></script>
+<script
+    src="{{ url_for('static', filename='js/player.js') }}"
+></script>
+<script
+    src="{{ url_for('static', filename='js/rain.js') }}"
+></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+
+</html>

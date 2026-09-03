@@ -1,0 +1,954 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Nostalgic Radio
+{% endblock %}
+
+
+{% block content %}
+
+<main class="radio-page">
+
+
+    <!-- =========================
+         BACKGROUND
+    ========================== -->
+
+    <div class="background-layer background-layer-one"></div>
+
+    <div class="background-layer background-layer-two"></div>
+
+
+    <!-- =========================
+         RAIN
+    ========================== -->
+
+    <div
+        id="rain-overlay"
+        class="rain-overlay"
+        aria-hidden="true"
+    ></div>
+
+    <!-- =========================
+     VINTAGE / VHS OVERLAY
+========================== -->
+
+<div
+    id="vintage-overlay"
+    class="vintage-overlay"
+    aria-hidden="true"
+>
+    <div class="vhs-scanlines"></div>
+    <div class="vhs-noise"></div>
+    <div class="vhs-vignette"></div>
+</div>
+
+    <!-- =========================
+         TOP NAVIGATION
+    ========================== -->
+
+    <header class="top-bar">
+
+
+        <!-- LEFT -->
+
+        <div class="top-left">
+
+            <span id="clock">
+                00:00
+            </span>
+
+
+            <span class="top-divider">
+                |
+            </span>
+
+
+            <span class="online-status">
+
+                <span class="online-dot"></span>
+
+                <span id="online-count">
+                    0
+                </span>
+
+            </span>
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div class="top-right">
+
+
+            <!-- ABOUT -->
+
+            <button
+                id="about-button"
+                class="nav-text-button"
+                type="button"
+            >
+                ABOUT
+            </button>
+
+
+            <!-- FAQ -->
+
+            <button
+                id="faq-button"
+                class="nav-text-button"
+                type="button"
+            >
+                FAQ
+            </button>
+
+
+            <!-- RAIN -->
+
+            <button
+                id="rain-button"
+                class="glass-button"
+                type="button"
+                title="Toggle Rain"
+            >
+                🌧️
+            </button>
+
+
+            <!-- SETTINGS -->
+
+            <button
+                id="settings-button"
+                class="glass-button"
+                type="button"
+                title="Settings"
+            >
+                ⚙
+            </button>
+
+
+            <!-- SCREENSAVER -->
+
+            <button
+                id="screensaver-button"
+                class="glass-button"
+                type="button"
+                title="Screensaver"
+            >
+                ◐
+            </button>
+
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <section class="hero-section">
+
+
+        <div class="hero-content">
+
+
+            <p
+                id="mode-label"
+                class="mode-label"
+            >
+                NOSTALGIC RADIO
+            </p>
+
+
+            <h1 id="mode-title">
+                Choose your music
+            </h1>
+
+
+            <p id="mode-description">
+                Select a mode and let the memories play.
+            </p>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             EXPLORE
+        ========================== -->
+
+        <section class="explore-section">
+
+
+            <p class="explore-label">
+                EXPLORE
+            </p>
+
+
+            <div class="explore-line"></div>
+
+
+            <h2 class="explore-title">
+
+                <span class="explore-static">
+                    Explore
+                </span>
+
+
+                <span
+                    id="explore-changing-text"
+                    class="explore-changing-text"
+                >
+                    Movies
+                </span>
+
+            </h2>
+
+
+            <p class="explore-subtitle">
+                Music, memories &amp; moments
+            </p>
+
+
+            <div class="explore-scroll-indicator">
+
+                <span></span>
+
+            </div>
+
+
+        </section>
+
+
+    </section>
+
+
+
+    <!-- =========================
+         MUSIC PLAYER
+    ========================== -->
+
+    <section class="music-player">
+
+        <!-- AUDIO VISUALIZER -->
+        <div
+            id="audio-visualizer"
+            class="audio-visualizer"
+            aria-hidden="true"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+        </div>
+        <!-- TRACK -->
+
+        <div class="track-section">
+
+
+            <!-- ALBUM -->
+
+            <div
+                id="album-art"
+                class="album-art"
+            >
+
+                <img
+                    id="album-image"
+                    src=""
+                    alt="Current song artwork"
+                >
+
+
+                <div class="disc-center"></div>
+
+            </div>
+
+
+
+            <!-- TRACK DETAILS -->
+
+            <div class="track-details">
+
+                <h2 id="song-title">
+                    Nostalgic Radio
+                </h2>
+
+
+                <p id="song-source">
+                    YouTube Music
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             PLAYER CONTROLS
+        ========================== -->
+
+        <div class="player-controls">
+
+
+            <button
+                id="previous-button"
+                class="player-button"
+                type="button"
+                title="Previous"
+            >
+                ‹
+            </button>
+
+
+            <button
+                id="play-button"
+                class="play-button"
+                type="button"
+                title="Play"
+            >
+                ▶
+            </button>
+
+
+            <button
+                id="next-button"
+                class="player-button"
+                type="button"
+                title="Next"
+            >
+                ›
+            </button>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             PROGRESS
+        ========================== -->
+
+        <div class="progress-section">
+
+    <span id="current-time">
+        0:00
+    </span>
+
+    <div
+        id="waveform-progress"
+        class="waveform-progress"
+    >
+
+        <svg
+            class="waveform-svg"
+            viewBox="0 0 600 70"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+        >
+
+            <!-- DIM / UNPLAYED WAVE -->
+
+            <path
+                class="waveform-line waveform-line-back"
+                d="M0 35
+                    L12 35
+                    L22 32
+                    L30 35
+                    L42 35
+                    L50 20
+                    L58 50
+                    L70 35
+                    L90 35
+                    L105 30
+                    L115 35
+                    L130 35
+                    L142 15
+                    L154 55
+                    L166 35
+                    L185 35
+                    L200 28
+                    L212 35
+                    L225 35
+                    L240 18
+                    L252 52
+                    L265 35
+                    L285 35
+                    L300 30
+                    L315 35
+                    L330 35
+                    L345 12
+                    L358 58
+                    L372 35
+                    L390 35
+                    L405 28
+                    L420 35
+                    L438 35
+                    L450 20
+                    L462 50
+                    L475 35
+                    L495 35
+                    L510 30
+                    L525 35
+                    L540 35
+                    L555 22
+                    L568 48
+                    L580 35
+                    L600 35"
+            ></path>
+
+
+            <!-- PLAYED WAVE -->
+
+            <path
+                class="waveform-line waveform-line-front"
+                d="M0 35
+                    L12 35
+                    L22 32
+                    L30 35
+                    L42 35
+                    L50 20
+                    L58 50
+                    L70 35
+                    L90 35
+                    L105 30
+                    L115 35
+                    L130 35
+                    L142 15
+                    L154 55
+                    L166 35
+                    L185 35
+                    L200 28
+                    L212 35
+                    L225 35
+                    L240 18
+                    L252 52
+                    L265 35
+                    L285 35
+                    L300 30
+                    L315 35
+                    L330 35
+                    L345 12
+                    L358 58
+                    L372 35
+                    L390 35
+                    L405 28
+                    L420 35
+                    L438 35
+                    450 20
+                    462 50
+                    475 35
+                    495 35
+                    510 30
+                    525 35
+                    540 35
+                    555 22
+                    568 48
+                    580 35
+                    600 35"
+            ></path>
+
+        </svg>
+
+
+        <!-- INVISIBLE SEEK CONTROL -->
+
+        <input
+            id="progress-control"
+            type="range"
+            min="0"
+            max="100"
+            value="0"
+            aria-label="Song progress"
+        >
+
+    </div>
+
+    <span id="duration">
+        0:00
+    </span>
+
+</div>
+
+
+    </section>
+
+
+
+    <!-- =========================
+         MUSIC MODE BUTTON
+    ========================== -->
+
+    <button
+        id="mode-button"
+        class="mode-button"
+        type="button"
+    >
+        ☰ &nbsp; MUSIC MODES
+    </button>
+
+
+
+    <!-- =========================
+         MUSIC MODE PANEL
+    ========================== -->
+
+    <aside
+        id="mode-panel"
+        class="mode-panel"
+        aria-hidden="true"
+    >
+
+
+        <div class="mode-panel-content">
+
+
+            <div class="mode-panel-header">
+
+
+                <div>
+
+                    <p class="small-label">
+                        NOSTALGIC RADIO
+                    </p>
+
+
+                    <h2>
+                        Choose your mode
+                    </h2>
+
+                </div>
+
+
+                <button
+                    id="close-mode-button"
+                    class="close-button"
+                    type="button"
+                    title="Close"
+                >
+                    ×
+                </button>
+
+
+            </div>
+
+
+
+            <div
+                id="mode-list"
+                class="mode-list"
+            ></div>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =========================
+         SETTINGS PANEL
+    ========================== -->
+
+    <aside
+        id="settings-panel"
+        class="settings-panel"
+        aria-hidden="true"
+    >
+
+
+        <div class="settings-content">
+
+
+            <div class="settings-header">
+
+
+                <div>
+
+                    <p class="small-label">
+                        SETTINGS
+                    </p>
+
+
+                    <h2>
+                        Appearance
+                    </h2>
+
+                </div>
+
+
+                <button
+                    id="close-settings-button"
+                    class="close-button"
+                    type="button"
+                    title="Close"
+                >
+                    ×
+                </button>
+
+
+            </div>
+
+
+
+            <!-- PLAYER STYLE -->
+
+            <div class="setting-group">
+
+
+                <p class="setting-title">
+                    Player style
+                </p>
+
+
+                <div class="setting-options">
+
+
+                    <button
+                        class="setting-option selected"
+                        data-player-style="glass"
+                        type="button"
+                    >
+                        Glass
+                    </button>
+
+
+                    <button
+                        class="setting-option"
+                        data-player-style="solid"
+                        type="button"
+                    >
+                        Solid
+                    </button>
+
+
+                    <button
+                        class="setting-option"
+                        data-player-style="auto"
+                        type="button"
+                    >
+                        Auto
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =========================
+         ABOUT PANEL
+    ========================== -->
+
+    <aside
+        id="about-panel"
+        class="info-panel"
+        aria-hidden="true"
+    >
+
+
+        <div class="info-panel-content">
+
+
+            <div class="info-panel-header">
+
+
+                <div>
+
+                    <p class="small-label">
+                        NOSTALGIC RADIO
+                    </p>
+
+
+                    <h2>
+                        About
+                    </h2>
+
+                </div>
+
+
+                <button
+                    id="close-about-button"
+                    class="close-button"
+                    type="button"
+                    title="Close"
+                >
+                    ×
+                </button>
+
+
+            </div>
+
+
+
+            <div class="info-body">
+
+
+                <p>
+                    A little place for old songs,
+                    memories and late-night vibes.
+                </p>
+
+
+                <p>
+                    Choose a music mode, sit back,
+                    and let the memories play.
+                </p>
+
+
+                <div class="about-divider"></div>
+
+
+                <p class="about-small-text">
+                    Built for people who believe
+                    some songs never get old.
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =========================
+         FAQ PANEL
+    ========================== -->
+
+    <aside
+        id="faq-panel"
+        class="info-panel"
+        aria-hidden="true"
+    >
+
+
+        <div class="info-panel-content">
+
+
+            <div class="info-panel-header">
+
+
+                <div>
+
+                    <p class="small-label">
+                        NOSTALGIC RADIO
+                    </p>
+
+
+                    <h2>
+                        FAQ
+                    </h2>
+
+                </div>
+
+
+                <button
+                    id="close-faq-button"
+                    class="close-button"
+                    type="button"
+                    title="Close"
+                >
+                    ×
+                </button>
+
+
+            </div>
+
+
+
+            <div class="faq-list">
+
+
+                <details>
+
+                    <summary>
+                        How does the radio work?
+                    </summary>
+
+                    <p>
+                        Select a music mode and the
+                        corresponding playlist will play.
+                    </p>
+
+                </details>
+
+
+
+                <details>
+
+                    <summary>
+                        Where does the music come from?
+                    </summary>
+
+                    <p>
+                        Music is played through
+                        YouTube's embedded player.
+                    </p>
+
+                </details>
+
+
+
+                <details>
+
+                    <summary>
+                        Can I change the appearance?
+                    </summary>
+
+                    <p>
+                        Yes. Open Settings and choose
+                        Glass, Solid or Auto.
+                    </p>
+
+                </details>
+
+
+
+                <details>
+
+                    <summary>
+                        Can I turn the rain off?
+                    </summary>
+
+                    <p>
+                        Yes. Use the rain button in
+                        the top-right corner.
+                    </p>
+
+                </details>
+
+
+
+                <details>
+
+                    <summary>
+                        What is Screensaver mode?
+                    </summary>
+
+                    <p>
+                        Screensaver mode creates a
+                        distraction-free cinematic view
+                        for listening.
+                    </p>
+
+                </details>
+
+
+            </div>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="site-footer">
+
+    <div class="footer-main">
+
+        <p class="footer-brand">
+            NOSTALGIC RADIO
+        </p>
+
+        <p class="footer-tagline">
+            Music, memories &amp; moments.
+        </p>
+
+    </div>
+
+
+    <div class="footer-creator">
+
+        <span class="footer-created">
+            Created by
+        </span>
+
+        <span class="footer-name">
+            Sandeep Patra
+        </span>
+
+        <a
+            class="footer-email"
+            href="mailto:snxuuuu@gmail.com"
+        >
+            snxuuuu@gmail.com
+        </a>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <span>
+            Made with ❤️ Sandeepuja
+        </span>
+
+        <span class="footer-dot">
+            •
+        </span>
+
+        <span>
+            Keep the memories playing.
+        </span>
+
+    </div>
+
+</footer>
+
+
+
+    <!-- =========================
+         YOUTUBE PLAYER
+    ========================== -->
+
+    <div
+        id="youtube-player-container"
+        class="youtube-player-container"
+    >
+
+        <div id="youtube-player"></div>
+
+    </div>
+
+
+</main>
+
+{% endblock %}
