@@ -391,16 +391,28 @@
         const spotifyLikeBtn = document.getElementById("spotify-like-btn");
         const stickyLikeBtn = document.getElementById("spotify-sticky-like-btn");
 
-        function handleLikeClick() {
-            const mainLikeBtn = document.getElementById("like-button");
-            if (mainLikeBtn) {
-                mainLikeBtn.click();
+        function handleLikeClick(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
-            setTimeout(syncLikeState, 80);
+            if (typeof window.toggleWishlistCurrentSong === "function") {
+                window.toggleWishlistCurrentSong();
+            } else {
+                const mainLikeBtn = document.getElementById("like-button");
+                if (mainLikeBtn) mainLikeBtn.click();
+            }
+            setTimeout(syncLikeState, 60);
         }
 
-        if (spotifyLikeBtn) spotifyLikeBtn.addEventListener("click", handleLikeClick);
-        if (stickyLikeBtn) stickyLikeBtn.addEventListener("click", handleLikeClick);
+        if (spotifyLikeBtn && spotifyLikeBtn.dataset.boundSpotifyLike !== "true") {
+            spotifyLikeBtn.dataset.boundSpotifyLike = "true";
+            spotifyLikeBtn.addEventListener("click", handleLikeClick);
+        }
+        if (stickyLikeBtn && stickyLikeBtn.dataset.boundSpotifyLike !== "true") {
+            stickyLikeBtn.dataset.boundSpotifyLike = "true";
+            stickyLikeBtn.addEventListener("click", handleLikeClick);
+        }
 
         const progressSlider = document.getElementById("spotify-progress-slider");
         if (progressSlider) {

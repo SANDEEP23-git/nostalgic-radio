@@ -971,7 +971,6 @@ def get_wishlist():
         user["_id"]
     )
 
-
     wishlist = list(
         wishlists_collection.find(
             {
@@ -983,18 +982,52 @@ def get_wishlist():
         )
     )
 
-
     for item in wishlist:
+        item["_id"] = str(item["_id"])
+        video_id = item.get("video_id") or item.get("videoId") or ""
+        item["video_id"] = video_id
+        item["videoId"] = video_id
 
-        item["_id"] = str(
-            item["_id"]
-        )
+        # Normalize title
+        title = item.get("original_title") or item.get("title") or "Nostalgic Radio Track"
+        item["original_title"] = title
+        item["originalTitle"] = title
+        item["title"] = title
+        if "custom_title" not in item:
+            item["custom_title"] = item.get("customTitle", "")
+        item["customTitle"] = item.get("custom_title", "")
 
+        # Normalize author / artist
+        author = item.get("author") or item.get("artist") or "YouTube Music"
+        item["author"] = author
+        item["artist"] = author
+
+        # Normalize thumbnail / album art
+        fallback_art = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg" if video_id else ""
+        art = item.get("album_art") or item.get("albumArt") or item.get("thumbnail") or fallback_art
+        item["album_art"] = art
+        item["albumArt"] = art
+        item["thumbnail"] = art
+
+        # Normalize mode / era
+        mode_name = item.get("mode_name") or item.get("modeName") or item.get("era") or "Nostalgic Era"
+        mode_id = item.get("mode_id") or item.get("modeId") or "papa-era"
+        item["mode_name"] = mode_name
+        item["modeName"] = mode_name
+        item["era"] = mode_name
+        item["mode_id"] = mode_id
+        item["modeId"] = mode_id
+
+        # Normalize date
+        liked_at = item.get("liked_at") or item.get("likedAt")
+        if isinstance(liked_at, datetime):
+            liked_at = liked_at.isoformat()
+        item["liked_at"] = liked_at
+        item["likedAt"] = liked_at
 
     return jsonify(
         {
             "success": True,
-
             "wishlist": wishlist
         }
     )
@@ -1015,162 +1048,195 @@ def add_to_wishlist():
     if error:
         return error
 
-
     data = request.get_json(
         silent=True
     ) or {}
 
-
     video_id = str(
-        data.get(
-            "video_id",
-            ""
-        )
+        data.get("video_id") or data.get("videoId") or ""
     ).strip()
 
-
     if not video_id:
-
         return jsonify(
             {
                 "success": False,
-                "message":
-                    "video_id is required"
+                "message": "video_id is required"
             }
         ), 400
-
 
     user_id = str(
         user["_id"]
     )
 
+    custom_title = str(
+        data.get("custom_title") or data.get("customTitle") or ""
+    ).strip()
+
+    original_title = str(
+        data.get("original_title") or data.get("originalTitle") or data.get("title") or "Nostalgic Radio Track"
+    ).strip()
+
+    author = str(
+        data.get("author") or data.get("artist") or "YouTube Music"
+    ).strip()
+
+    mode_id = str(
+        data.get("mode_id") or data.get("modeId") or "papa-era"
+    ).strip()
+
+    mode_name = str(
+        data.get("mode_name") or data.get("modeName") or data.get("era") or "Nostalgic Era"
+    ).strip()
+
+    fallback_thumb = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg" if video_id else ""
+    album_art = str(
+        data.get("album_art") or data.get("albumArt") or data.get("thumbnail") or fallback_thumb
+    ).strip()
+
+    now = datetime.now(timezone.utc)
 
     wishlist_document = {
-
-        "user_id":
-            user_id,
-
-        "video_id":
-            video_id,
-
-        "custom_title":
-            str(
-                data.get(
-                    "custom_title",
-                    ""
-                )
-            ).strip(),
-
-        "original_title":
-            str(
-                data.get(
-                    "original_title",
-                    ""
-                )
-            ).strip(),
-
-        "artist":
-            str(
-                data.get(
-                    "artist",
-                    ""
-                )
-            ).strip(),
-
-        "thumbnail":
-            str(
-                data.get(
-                    "thumbnail",
-                    ""
-                )
-            ).strip(),
-
-        "era":
-            str(
-                data.get(
-                    "era",
-                    ""
-                )
-            ).strip(),
-
-        "liked_at":
-            datetime.now(
-                timezone.utc
-            )
+        "user_id": user_id,
+        "video_id": video_id,
+        "videoId": video_id,
+        "custom_title": custom_title,
+        "customTitle": custom_title,
+        "original_title": original_title,
+        "originalTitle": original_title,
+        "title": custom_title or original_title,
+        "artist": author,
+        "author": author,
+        "thumbnail": album_art,
+        "album_art": album_art,
+        "albumArt": album_art,
+        "era": mode_name,
+        "mode_id": mode_id,
+        "modeId": mode_id,
+        "mode_name": mode_name,
+        "modeName": mode_name,
+        "liked_at": now
     }
 
-
-    # -----------------------------------------
-    # DUPLICATE CHECK
-    # -----------------------------------------
-
-    existing = (
-        wishlists_collection.find_one(
+    # Upsert so it updates existing or inserts new
+    try:
+        result = wishlists_collection.update_one(
             {
-                "user_id":
-                    user_id,
-
-                "video_id":
-                    video_id
-            }
+                "user_id": user_id,
+                "video_id": video_id
+            },
+            {
+                "$set": wishlist_document,
+                "$setOnInsert": {
+                    "created_at": now
+                }
+            },
+            upsert=True
         )
-    )
 
-
-    if existing:
+        is_new = bool(result.upserted_id)
 
         return jsonify(
             {
                 "success": True,
-
-                "already_exists": True,
-
-                "message":
-                    "Song is already in your wishlist"
+                "already_exists": not is_new,
+                "message": "Song added to your wishlist" if is_new else "Song updated in your wishlist",
+                "id": str(result.upserted_id or "")
             }
         )
 
-
-    # -----------------------------------------
-    # INSERT
-    # -----------------------------------------
-
-    try:
-
-        result = (
-            wishlists_collection.insert_one(
-                wishlist_document
-            )
-        )
-
     except Exception as error:
-
-        print(
-            "Wishlist insert error:",
-            error
-        )
-
+        print("Wishlist insert error:", error)
         return jsonify(
             {
                 "success": False,
-
-                "message":
-                    "Could not save song"
+                "message": "Could not save song"
             }
         ), 500
 
 
-    return jsonify(
-        {
-            "success": True,
+# =========================================================
+# BATCH SYNC LOCALSTORAGE WISHLIST WITH DATABASE
+# =========================================================
 
-            "message":
-                "Song added to your wishlist",
+@app.route(
+    "/api/wishlist/sync",
+    methods=["POST"]
+)
+def sync_wishlist():
 
-            "id":
-                str(result.inserted_id)
+    user, error = require_login()
+
+    if error:
+        return error
+
+    user_id = str(user["_id"])
+    data = request.get_json(silent=True) or {}
+    songs = data.get("songs") or []
+
+    if not isinstance(songs, list):
+        return jsonify({"success": False, "message": "songs array required"}), 400
+
+    now = datetime.now(timezone.utc)
+    synced_count = 0
+
+    for s in songs:
+        if not isinstance(s, dict):
+            continue
+        v_id = str(s.get("video_id") or s.get("videoId") or "").strip()
+        if not v_id:
+            continue
+
+        c_title = str(s.get("custom_title") or s.get("customTitle") or "").strip()
+        o_title = str(s.get("original_title") or s.get("originalTitle") or s.get("title") or "Nostalgic Radio Track").strip()
+        aut = str(s.get("author") or s.get("artist") or "YouTube Music").strip()
+        m_id = str(s.get("mode_id") or s.get("modeId") or "papa-era").strip()
+        m_name = str(s.get("mode_name") or s.get("modeName") or s.get("era") or "Nostalgic Era").strip()
+        fb_art = f"https://img.youtube.com/vi/{v_id}/hqdefault.jpg"
+        art = str(s.get("album_art") or s.get("albumArt") or s.get("thumbnail") or fb_art).strip()
+
+        doc = {
+            "user_id": user_id,
+            "video_id": v_id,
+            "videoId": v_id,
+            "custom_title": c_title,
+            "customTitle": c_title,
+            "original_title": o_title,
+            "originalTitle": o_title,
+            "title": c_title or o_title,
+            "artist": aut,
+            "author": aut,
+            "thumbnail": art,
+            "album_art": art,
+            "albumArt": art,
+            "era": m_name,
+            "mode_id": m_id,
+            "modeId": m_id,
+            "mode_name": m_name,
+            "modeName": m_name,
+            "liked_at": now
         }
-    )
+
+        try:
+            wishlists_collection.update_one(
+                {
+                    "user_id": user_id,
+                    "video_id": v_id
+                },
+                {
+                    "$set": doc,
+                    "$setOnInsert": {"created_at": now}
+                },
+                upsert=True
+            )
+            synced_count += 1
+        except Exception as e:
+            print("Sync error for song:", v_id, e)
+
+    return jsonify({
+        "success": True,
+        "synced": synced_count,
+        "message": f"{synced_count} songs synced to database"
+    })
 
 
 # =========================================================
@@ -1560,17 +1626,24 @@ def add_listening_history():
     history_document = {
         "user_id": user_id,
         "video_id": video_id,
+        "videoId": video_id,
         "title": str(
-            data.get("title", "")
+            data.get("title") or data.get("original_title") or "Nostalgic Radio Track"
         ).strip(),
         "artist": str(
-            data.get("artist", "")
+            data.get("artist") or data.get("author") or "YouTube Music"
+        ).strip(),
+        "author": str(
+            data.get("author") or data.get("artist") or "YouTube Music"
         ).strip(),
         "thumbnail": str(
-            data.get("thumbnail", "")
+            data.get("thumbnail") or data.get("album_art") or data.get("albumArt") or f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+        ).strip(),
+        "album_art": str(
+            data.get("album_art") or data.get("albumArt") or data.get("thumbnail") or f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
         ).strip(),
         "era": str(
-            data.get("era", "")
+            data.get("era") or data.get("mode_name") or "Nostalgic Era"
         ).strip(),
         "played_at": datetime.now(
             timezone.utc
@@ -1616,9 +1689,24 @@ def get_listening_history():
     )
 
     for item in history:
-        item["_id"] = str(
-            item["_id"]
-        )
+        item["_id"] = str(item["_id"])
+        vid = item.get("video_id") or item.get("videoId") or ""
+        item["video_id"] = vid
+        item["videoId"] = vid
+        author = item.get("artist") or item.get("author") or "YouTube Music"
+        item["artist"] = author
+        item["author"] = author
+        thumb = item.get("thumbnail") or item.get("album_art") or f"https://img.youtube.com/vi/{vid}/hqdefault.jpg"
+        item["thumbnail"] = thumb
+        item["album_art"] = thumb
+        item["albumArt"] = thumb
+        era = item.get("era") or item.get("mode_name") or "Nostalgic Era"
+        item["era"] = era
+        item["mode_name"] = era
+        item["modeName"] = era
+        played_at = item.get("played_at")
+        if isinstance(played_at, datetime):
+            item["played_at"] = played_at.isoformat()
 
     return jsonify({
         "success": True,

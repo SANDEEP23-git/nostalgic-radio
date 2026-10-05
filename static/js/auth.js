@@ -6,6 +6,24 @@
     let currentUser = null;
     let currentStage = "loader";
 
+    function setCurrentUser(user) {
+        currentUser = user;
+        window.currentUser = user;
+        if (user) {
+            try {
+                localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
+            } catch (e) {}
+            if (typeof window.syncLocalWishlistWithDatabase === "function") {
+                window.syncLocalWishlistWithDatabase();
+            }
+        } else {
+            try {
+                localStorage.removeItem(STORAGE_KEY_USER);
+            } catch (e) {}
+        }
+        window.dispatchEvent(new CustomEvent("auth-state-changed", { detail: user }));
+    }
+
 
     async function initAuth() {
         
@@ -21,6 +39,7 @@
         window.showAppStage = showAppStage;
         window.handleUserLogout = handleUserLogout;
         window.getCurrentUser = () => currentUser;
+        window.currentUser = currentUser;
         window.updateAuthUI = updateUI;
 
         
@@ -47,7 +66,7 @@
     function syncServerAuth() {
         if (window.SERVER_AUTH) {
             if (window.SERVER_AUTH.isAuthenticated && window.SERVER_AUTH.user) {
-                currentUser = window.SERVER_AUTH.user;
+                setCurrentUser(window.SERVER_AUTH.user);
                 try {
                     localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
                 } catch (e) {}
@@ -65,7 +84,7 @@
             if (saved) {
                 const parsed = JSON.parse(saved);
                 if (parsed && (parsed.id || parsed._id) && !parsed.isGuest) {
-                    currentUser = parsed;
+                    setCurrentUser(parsed);
                 } else {
                     currentUser = null;
                     localStorage.removeItem(STORAGE_KEY_USER);
@@ -88,7 +107,7 @@
             if (res.ok) {
                 const data = await res.json();
                 if (data.success && data.logged_in && data.user) {
-                    currentUser = data.user;
+                    setCurrentUser(data.user);
                     localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
                 } else {
                     currentUser = null;
@@ -575,7 +594,7 @@
                     }
 
                     // SUCCESS: Logged in!
-                    currentUser = data.user;
+                    setCurrentUser(data.user);
                     localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
 
                     clearAuthAlert();
@@ -720,8 +739,7 @@
             console.warn("Logout request failed:", e);
         }
 
-        currentUser = null;
-        localStorage.removeItem(STORAGE_KEY_USER);
+        setCurrentUser(null);
 
         // Pause audio playback
         pauseMusicPlayer();

@@ -21,6 +21,43 @@
 
     let currentLikedSort = "date-desc";
 
+    const STORAGE_KEY_WISHLIST = "nostalgic_wishlist";
+    const STORAGE_KEY_MEMORIES = "nostalgic_memories_history";
+
+    function getLocalWishlist() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY_WISHLIST);
+            if (!raw) return [];
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed.map(normalizeWishlistItem) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveLocalWishlist(list) {
+        try {
+            localStorage.setItem(STORAGE_KEY_WISHLIST, JSON.stringify(list || []));
+        } catch (e) {}
+    }
+
+    function getLocalMemories() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY_MEMORIES);
+            if (!raw) return [];
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed.map(normalizeMemoryItem) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveLocalMemories(list) {
+        try {
+            localStorage.setItem(STORAGE_KEY_MEMORIES, JSON.stringify(list || []));
+        } catch (e) {}
+    }
+
     /* =========================================================
        API HELPER
        ========================================================= */
@@ -60,7 +97,21 @@
     }
 
     function isLoggedIn() {
-        return !!window.currentUser;
+        if (window.currentUser && (window.currentUser.id || window.currentUser._id || window.currentUser.name)) {
+            return true;
+        }
+        if (typeof window.getCurrentUser === "function") {
+            const u = window.getCurrentUser();
+            if (u && (u.id || u._id || u.name)) return true;
+        }
+        try {
+            const saved = localStorage.getItem("nostalgic_radio_user");
+            if (saved) {
+                const u = JSON.parse(saved);
+                if (u && (u.id || u._id || u.name)) return true;
+            }
+        } catch (e) {}
+        return false;
     }
 
     /* =========================================================
@@ -99,39 +150,42 @@
     }
 
     /* =========================================================
-       LOAD WISHLIST FROM MONGODB
+       LOAD WISHLIST (LOCALSTORAGE + MONGODB SYNC)
        ========================================================= */
 
     async function loadWishlist() {
-
-        if (!isLoggedIn()) {
-            wishlist = [];
-            return;
+        // 1. Immediately read from localStorage
+        const local = getLocalWishlist();
+        if (local && local.length > 0) {
+            wishlist = local;
         }
 
-        try {
+        // 2. If logged in, fetch from MongoDB and sync
+        if (isLoggedIn()) {
+            try {
+                const data = await apiRequest("/api/wishlist");
+                const serverItems = Array.isArray(data.wishlist) ? data.wishlist.map(normalizeWishlistItem) : [];
 
-            const data = await apiRequest(
-                "/api/wishlist"
-            );
+                // Check for local items that need to be synced to DB
+                const serverIds = new Set(serverItems.map(s => s.videoId));
+                const unsynced = (local || []).filter(item => item && item.videoId && !serverIds.has(item.videoId));
 
-            wishlist = Array.isArray(data.wishlist)
-                ? data.wishlist
-                : [];
+                if (unsynced.length > 0) {
+                    try {
+                        await apiRequest("/api/wishlist/sync", {
+                            method: "POST",
+                            body: JSON.stringify({ songs: unsynced })
+                        });
+                        unsynced.forEach(s => serverItems.push(s));
+                    } catch (syncErr) {
+                        console.warn("Could not sync local items to DB:", syncErr);
+                    }
+                }
 
-        } catch (error) {
-
-            console.error(
-                "Could not load wishlist:",
-                error
-            );
-
-            wishlist = [];
-
-            if (error.status !== 401) {
-                showToast(
-                    "Could not load your wishlist."
-                );
+                wishlist = serverItems;
+                saveLocalWishlist(wishlist);
+            } catch (error) {
+                console.warn("Could not load wishlist from server, using local cache:", error);
             }
         }
     }
@@ -141,35 +195,21 @@
        ========================================================= */
 
     async function loadMemories() {
-
-        if (!isLoggedIn()) {
-            memoriesHistory = [];
-            return;
+        const local = getLocalMemories();
+        if (local && local.length > 0) {
+            memoriesHistory = local;
         }
 
-        try {
-
-            const data = await apiRequest(
-                "/api/listening-history"
-            );
-
-            memoriesHistory = Array.isArray(data.history)
-                ? data.history.map(normalizeMemoryItem)
-                : [];
-
-        } catch (error) {
-
-            console.error(
-                "Could not load listening history:",
-                error
-            );
-
-            memoriesHistory = [];
-
-            if (error.status !== 401) {
-                showToast(
-                    "Could not load listening history."
-                );
+        if (isLoggedIn()) {
+            try {
+                const data = await apiRequest("/api/listening-history");
+                const serverList = Array.isArray(data.history)
+                    ? data.history.map(normalizeMemoryItem)
+                    : [];
+                memoriesHistory = serverList;
+                saveLocalMemories(memoriesHistory);
+            } catch (error) {
+                console.warn("Could not load listening history from server:", error);
             }
         }
     }
@@ -271,76 +311,73 @@
     }
 
     /* =========================================================
-       SAVE WISHLIST TO MONGODB
+       SAVE WISHLIST (LOCALSTORAGE + MONGODB)
        ========================================================= */
 
     async function saveWishlistItem(item) {
+        const normalized = normalizeWishlistItem(item);
 
-        try {
+        // 1. Always update local storage first so user never loses song
+        const existingIdx = wishlist.findIndex(w => w.videoId === normalized.videoId);
+        if (existingIdx >= 0) {
+            wishlist[existingIdx] = normalized;
+        } else {
+            wishlist.unshift(normalized);
+        }
+        saveLocalWishlist(wishlist);
 
-            await apiRequest(
-                "/api/wishlist",
-                {
+        // 2. If logged in, persist to database
+        if (isLoggedIn()) {
+            try {
+                await apiRequest("/api/wishlist", {
                     method: "POST",
                     body: JSON.stringify({
-                        video_id: item.videoId,
-                        original_title: item.originalTitle,
-                        custom_title: item.customTitle || "",
-                        author: item.author,
-                        mode_id: item.modeId,
-                        mode_name: item.modeName,
-                        album_art: item.albumArt
+                        video_id: normalized.videoId,
+                        videoId: normalized.videoId,
+                        original_title: normalized.originalTitle,
+                        originalTitle: normalized.originalTitle,
+                        custom_title: normalized.customTitle || "",
+                        customTitle: normalized.customTitle || "",
+                        author: normalized.author,
+                        artist: normalized.author,
+                        mode_id: normalized.modeId,
+                        modeId: normalized.modeId,
+                        mode_name: normalized.modeName,
+                        era: normalized.modeName,
+                        album_art: normalized.albumArt,
+                        albumArt: normalized.albumArt,
+                        thumbnail: normalized.albumArt
                     })
-                }
-            );
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Could not save wishlist:",
-                error
-            );
-
-            showToast(
-                "Could not save this song."
-            );
-
-            return false;
+                });
+            } catch (error) {
+                console.warn("Could not save wishlist to DB, kept in localStorage:", error);
+            }
         }
+
+        return true;
     }
 
     /* =========================================================
-       DELETE WISHLIST FROM MONGODB
+       DELETE WISHLIST (LOCALSTORAGE + MONGODB)
        ========================================================= */
 
     async function deleteWishlistItem(videoId) {
+        // 1. Remove from local storage
+        wishlist = wishlist.filter(item => item.videoId !== videoId);
+        saveLocalWishlist(wishlist);
 
-        try {
-
-            await apiRequest(
-                `/api/wishlist/${encodeURIComponent(videoId)}`,
-                {
+        // 2. If logged in, delete from database
+        if (isLoggedIn()) {
+            try {
+                await apiRequest(`/api/wishlist/${encodeURIComponent(videoId)}`, {
                     method: "DELETE"
-                }
-            );
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Could not delete wishlist:",
-                error
-            );
-
-            showToast(
-                "Could not remove this song."
-            );
-
-            return false;
+                });
+            } catch (error) {
+                console.warn("Could not delete from DB, removed locally:", error);
+            }
         }
+
+        return true;
     }
 
     /* =========================================================
@@ -572,71 +609,73 @@
     }
 
     function updateLikeButtonState() {
+        const liked = isCurrentSongLiked();
+        const buttonIds = [
+            "like-button",
+            "spotify-like-btn",
+            "spotify-sticky-like-btn",
+            "opt-action-like"
+        ];
 
-        const likeBtn =
-            document.getElementById(
-                "like-button"
-            );
-
-        if (!likeBtn) {
-            return;
-        }
-
-        const liked =
-            isCurrentSongLiked();
-
-        if (liked) {
-
-            likeBtn.classList.add(
-                "liked"
-            );
-
-            likeBtn.title =
-                "Saved in Wishlist (Click to remove)";
-
-            likeBtn.setAttribute(
-                "aria-pressed",
-                "true"
-            );
-
-        } else {
-
-            likeBtn.classList.remove(
-                "liked"
-            );
-
-            likeBtn.title =
-                "Save to Memories Wishlist";
-
-            likeBtn.setAttribute(
-                "aria-pressed",
-                "false"
-            );
-        }
+        buttonIds.forEach(id => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            btn.classList.toggle("liked", liked);
+            btn.setAttribute("aria-pressed", liked ? "true" : "false");
+            if (id === "like-button" || id === "spotify-like-btn") {
+                btn.title = liked ? "In Wishlist (Click to remove)" : "Save to Memories Wishlist";
+            }
+            if (id === "opt-action-like") {
+                const title = document.getElementById("opt-action-like-title");
+                if (title) {
+                    title.textContent = liked ? "Remove from Memories Wishlist" : "Save to Memories Wishlist";
+                }
+            }
+        });
     }
 
     /* =========================================================
-       LIKE BUTTON
+       LIKE BUTTONS BINDING (ALL APP VIEWS)
        ========================================================= */
 
     function bindLikeButton() {
+        const buttonIds = [
+            "like-button",
+            "spotify-like-btn",
+            "spotify-sticky-like-btn",
+            "opt-action-like"
+        ];
 
-        const likeBtn =
-            document.getElementById(
-                "like-button"
-            );
+        buttonIds.forEach(id => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            if (btn.dataset.boundWishlist === "true") return;
+            btn.dataset.boundWishlist = "true";
 
-        if (!likeBtn) {
-            return;
-        }
-
-        likeBtn.addEventListener(
-            "click",
-            toggleCurrentTrackLike
-        );
+            btn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                toggleCurrentTrackLike();
+            });
+        });
     }
 
     async function toggleCurrentTrackLike() {
+        if (!currentTrack || !currentTrack.videoId) {
+            if (typeof window.getCurrentPlayingTrackInfo === "function") {
+                const info = window.getCurrentPlayingTrackInfo();
+                if (info && info.videoId) {
+                    currentTrack = {
+                        videoId: info.videoId,
+                        originalTitle: info.title || "Nostalgic Radio Track",
+                        author: info.author || "YouTube Music",
+                        modeId: info.mode?.id || "papa-era",
+                        modeName: info.mode?.name || "Nostalgic Era",
+                        albumArt: info.albumArt || `https://img.youtube.com/vi/${info.videoId}/hqdefault.jpg`
+                    };
+                }
+            }
+        }
 
         if (
             !currentTrack ||
@@ -2987,5 +3026,40 @@
             () => setupLikedSort()
         );
     }
+
+
+    /* =========================================================
+       GLOBAL SYNC & AUTH LISTENERS
+       ========================================================= */
+
+    window.syncLocalWishlistWithDatabase = async function () {
+        if (!isLoggedIn()) return;
+        const local = getLocalWishlist();
+        if (local.length > 0) {
+            try {
+                await apiRequest("/api/wishlist/sync", {
+                    method: "POST",
+                    body: JSON.stringify({ songs: local })
+                });
+            } catch (e) {
+                console.warn("Wishlist sync error:", e);
+            }
+        }
+        await loadWishlist();
+        await loadMemories();
+        updateWishlistCounters();
+        renderLikedPageView();
+        renderMemoriesPageView();
+        updateLikeButtonState();
+    };
+
+    window.addEventListener("auth-state-changed", function () {
+        if (typeof window.syncLocalWishlistWithDatabase === "function") {
+            window.syncLocalWishlistWithDatabase();
+        }
+    });
+
+    // Re-bind like buttons periodically as modals open
+    setInterval(bindLikeButton, 1500);
 
 })();

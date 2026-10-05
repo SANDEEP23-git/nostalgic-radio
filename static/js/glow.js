@@ -1,5 +1,5 @@
 /* =========================================================
-   NOSTALGIC RADIO — SOFT GLOW CURSOR (DESKTOP & MOBILE)
+   NOSTALGIC RADIO — SOFT GLOW CURSOR (PERFORMANCE OPTIMIZED)
    ========================================================= */
 
 (function () {
@@ -11,6 +11,7 @@
     let currentY = -500;
     let isTouch = false;
     let glowEnabled = true;
+    let isRendering = false;
 
     function initGlow() {
         cursorGlow = document.getElementById("ambient-cursor-glow");
@@ -43,8 +44,9 @@
         }
 
         // ===================================
-        // DESKTOP: Mouse movement & Hover
+        // DESKTOP: Mouse movement & Hover (Throttled)
         // ===================================
+        let lastMove = 0;
         window.addEventListener("mousemove", (e) => {
             if (isTouch || !glowEnabled) return;
             mouseX = e.clientX;
@@ -53,8 +55,18 @@
             if (cursorGlow) {
                 cursorGlow.style.opacity = "1";
             }
-            spawnMusicNote(e.clientX, e.clientY);
-        });
+
+            const now = performance.now();
+            if (now - lastMove > 120) {
+                lastMove = now;
+                spawnMusicNote(e.clientX, e.clientY);
+            }
+
+            if (!isRendering) {
+                isRendering = true;
+                requestAnimationFrame(renderLoop);
+            }
+        }, { passive: true });
 
         window.addEventListener("mouseout", (e) => {
             if (!e.relatedTarget && cursorGlow) {
@@ -63,36 +75,46 @@
         });
 
         // Hover effect on interactive elements
-        const interactiveSelector = "button, a, input, select, .mode-option, .mode-stack-card, .glass-button, .player-button, .play-button, .setting-option, .faq-list details, .preset-chip";
+        const interactiveSelector = "button, a, input, select, .mode-option, .mode-stack-card, .glass-button, .player-button, .play-button";
         
+        let hoverTimer = null;
         document.addEventListener("mouseover", (e) => {
-            if (!cursorGlow || isTouch) return;
-            if (e.target.closest(interactiveSelector)) {
-                cursorGlow.classList.add("hovering");
-            }
-        });
+            if (!cursorGlow || isTouch || !glowEnabled) return;
+            if (hoverTimer) return;
+            hoverTimer = setTimeout(() => {
+                hoverTimer = null;
+                if (e.target && e.target.closest && e.target.closest(interactiveSelector)) {
+                    cursorGlow.classList.add("hovering");
+                }
+            }, 30);
+        }, { passive: true });
 
         document.addEventListener("mouseout", (e) => {
             if (!cursorGlow || isTouch) return;
-            if (e.target.closest(interactiveSelector)) {
+            if (e.target && e.target.closest && e.target.closest(interactiveSelector)) {
                 cursorGlow.classList.remove("hovering");
             }
-        });
+        }, { passive: true });
 
         // Smooth Lerp loop for desktop cursor glow
         function renderLoop() {
             if (!isTouch && glowEnabled && cursorGlow) {
-                // Linear interpolation (lerp) for buttery physics
-                currentX += (mouseX - currentX) * 0.15;
-                currentY += (mouseY - currentY) * 0.15;
-                cursorGlow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+                const dx = mouseX - currentX;
+                const dy = mouseY - currentY;
+                
+                if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+                    currentX += dx * 0.2;
+                    currentY += dy * 0.2;
+                    cursorGlow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+                    requestAnimationFrame(renderLoop);
+                    return;
+                }
             }
-            requestAnimationFrame(renderLoop);
+            isRendering = false;
         }
-        renderLoop();
 
         // ===================================
-        // MOBILE & TOUCH: Touch glow
+        // MOBILE & TOUCH
         // ===================================
         window.addEventListener("touchstart", (e) => {
             isTouch = true;
@@ -110,7 +132,6 @@
             const touch = e.touches[0];
             if (touch) {
                 touchGlow.style.transform = `translate3d(${touch.clientX}px, ${touch.clientY}px, 0)`;
-                spawnMusicNote(touch.clientX, touch.clientY);
             }
         }, { passive: true });
 
@@ -121,20 +142,31 @@
     }
 
     // ==============================================
-    // MUSICAL NOTES CURSOR TRAIL (USER REQUEST)
+    // MUSICAL NOTES CURSOR TRAIL (LIGHTWEIGHT)
     // ==============================================
     const MUSIC_NOTES = ['♪', '♫', '♬', '♩', '♯', '♭', '𝄞'];
     const NOTE_COLORS = [
-        '#ff5964', '#fec601', '#35ff69', '#00f0ff', 
-        '#bd00ff', '#ff8400', '#ff0077', '#a6ff00', '#ffd700'
+        '#ffaa33', '#ffd166', '#00d9ff', '#ff3399', '#a6ff00'
     ];
     let lastNoteX = -100;
     let lastNoteY = -100;
+    let lastNoteTime = 0;
 
     function spawnMusicNote(x, y) {
-        if (!glowEnabled) return;
+        if (!glowEnabled || isTouch) return;
+        const now = performance.now();
+        if (now - lastNoteTime < 160) return;
+        
         const dist = Math.hypot(x - lastNoteX, y - lastNoteY);
-        if (dist < 22) return; // Spawn note every ~22px
+        if (dist < 40) return;
+
+        // Limit maximum simultaneous notes in DOM to 5
+        const currentNotes = document.getElementsByClassName("cursor-music-note");
+        if (currentNotes.length >= 5) {
+            currentNotes[0].remove();
+        }
+
+        lastNoteTime = now;
         lastNoteX = x;
         lastNoteY = y;
 
@@ -142,32 +174,26 @@
         note.className = "cursor-music-note";
         const symbol = MUSIC_NOTES[Math.floor(Math.random() * MUSIC_NOTES.length)];
         const color = NOTE_COLORS[Math.floor(Math.random() * NOTE_COLORS.length)];
-        const driftX = (Math.random() - 0.5) * 50;
-        const driftXEnd = driftX * 1.8;
-        const rot = (Math.random() - 0.5) * 40;
-        const rotEnd = (Math.random() - 0.5) * 75;
-        const size = 16 + Math.random() * 12;
+        const driftX = (Math.random() - 0.5) * 40;
+        const rot = (Math.random() - 0.5) * 35;
+        const size = 16 + Math.random() * 8;
 
         note.textContent = symbol;
         note.style.left = `${x}px`;
         note.style.top = `${y}px`;
         note.style.color = color;
         note.style.fontSize = `${size}px`;
-        note.style.textShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+        note.style.textShadow = `0 0 8px ${color}`;
         note.style.setProperty("--drift-x", `${driftX}px`);
-        note.style.setProperty("--drift-x-end", `${driftXEnd}px`);
+        note.style.setProperty("--drift-x-end", `${driftX * 1.5}px`);
         note.style.setProperty("--rot", `${rot}deg`);
-        note.style.setProperty("--rot-end", `${rotEnd}deg`);
+        note.style.setProperty("--rot-end", `${rot * 1.5}deg`);
 
         document.body.appendChild(note);
 
-        note.addEventListener("animationend", () => {
-            note.remove();
-        });
-
         setTimeout(() => {
             if (note.parentNode) note.remove();
-        }, 1300);
+        }, 900);
     }
 
     function createTouchRipple(x, y) {
@@ -178,8 +204,8 @@
         ripple.style.top = `${y}px`;
         document.body.appendChild(ripple);
         setTimeout(() => {
-            ripple.remove();
-        }, 800);
+            if (ripple.parentNode) ripple.remove();
+        }, 600);
     }
 
     if (document.readyState === "loading") {

@@ -400,6 +400,7 @@ document.addEventListener("DOMContentLoaded", function () {
             rainButton.title =
                 "Rain: OFF";
 
+            rainOverlay.innerHTML = "";
 
             /*
              * Fade out rain audio.
@@ -508,7 +509,11 @@ document.addEventListener("DOMContentLoaded", function () {
        INITIALIZE
        ========================================= */
 
-    createRain();
+    if (rainEnabled) {
+        createRain();
+    } else {
+        rainOverlay.innerHTML = "";
+    }
 
     updateRainUI();
 

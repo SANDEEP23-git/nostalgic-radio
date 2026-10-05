@@ -10301,3 +10301,162 @@ body.screensaver-active .exit-screensaver-btn {
     transform: translateY(-1px);
 }
 
+
+
+/* ==========================================================================
+   PERFECT RESPONSIVE ADJUSTMENT & FLUID SIZING FIX
+   ========================================================================== */
+
+/* Ensure smooth vertical scrolling and zero viewport overflow */
+html {
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+.radio-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    padding: clamp(12px, 2.5vw, 24px) clamp(12px, 3vw, 32px) max(95px, calc(80px + env(safe-area-inset-bottom, 15px))) !important;
+    box-sizing: border-box !important;
+}
+
+/* Fluid adaptive hero section */
+.hero-section {
+    min-height: auto !important;
+    flex: 0 1 auto !important;
+    padding: clamp(6px, 1.5vh, 18px) 8px !important;
+    margin: 0 auto !important;
+}
+
+.hero-content {
+    padding: clamp(4px, 1.2vh, 16px) clamp(8px, 2vw, 20px) !important;
+    max-width: 720px !important;
+}
+
+#mode-title {
+    font-size: clamp(28px, 6.5vw, 68px) !important;
+    line-height: 1.15 !important;
+    margin: clamp(4px, 1vh, 10px) 0 !important;
+}
+
+#mode-description {
+    font-size: clamp(12.5px, 2.5vw, 15px) !important;
+    opacity: 0.85;
+}
+
+/* Fluid music player card */
+.music-player {
+    width: 100% !important;
+    max-width: min(850px, 96vw) !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    padding: clamp(12px, 2vw, 18px) clamp(12px, 2.5vw, 22px) !important;
+    border-radius: clamp(18px, 3vw, 28px) !important;
+}
+
+/* Track details responsiveness */
+.track-section {
+    min-width: 0 !important;
+}
+
+.track-details {
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+
+#song-title {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    font-size: clamp(14px, 3.2vw, 18px) !important;
+}
+
+#song-source {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: clamp(11.5px, 2.4vw, 13px) !important;
+}
+
+/* Mode button wrap spacing */
+.mode-button-wrap {
+    margin: clamp(10px, 2vh, 22px) auto !important;
+}
+
+/* Subviews container smooth scrolling */
+.app-subview {
+    width: 100% !important;
+    flex: 1 0 auto !important;
+}
+
+.subview-page-container {
+    width: 100% !important;
+    max-width: min(720px, 96vw) !important;
+    margin: 0 auto !important;
+    padding: 10px 12px max(110px, calc(90px + env(safe-area-inset-bottom, 20px))) !important;
+    box-sizing: border-box !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .music-player {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .player-controls {
+        grid-row: 1 !important;
+        justify-content: center !important;
+    }
+
+    .track-section {
+        justify-content: flex-start !important;
+    }
+
+    .echo-pill-nav {
+        bottom: max(10px, env(safe-area-inset-bottom, 10px)) !important;
+        width: min(420px, calc(100% - 24px)) !important;
+    }
+
+    .top-bar {
+        padding: 4px 0 8px 0 !important;
+    }
+
+    .welcome-typing-area {
+        margin: 4px auto 8px auto !important;
+        font-size: clamp(13px, 3.8vw, 17px) !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .album-art {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+    }
+
+    .player-button {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 14px !important;
+    }
+
+    .play-button {
+        width: 46px !important;
+        height: 46px !important;
+        font-size: 18px !important;
+    }
+}

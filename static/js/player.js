@@ -12,93 +12,29 @@ let progressAnimationFrame = null;
 /* =========================================
    BACKGROUND & SCREEN-OFF AUDIO SUBSYSTEM
    ========================================= */
-let keepAliveAudio = null;
-let backgroundKeepAliveInterval = null;
-let backgroundResumeTimer = null;
 let lastMediaSessionPositionUpdate = 0;
 let wakeLock = null;
 
 window.userInitiatedPause = false;
 window.isPlaybackActive = false;
-window.isBackgroundAudioEnabled = localStorage.getItem("nostalgic_background_playback") !== "false";
+window.playerVolume = 100;
+window.isBackgroundAudioEnabled = true;
 
-// Generates an inaudible 6-second PCM WAV Blob URL to retain Android/iOS browser audio focus
-function getSilentAudioBlobUrl() {
-    try {
-        const sampleRate = 8000;
-        const durationSec = 6;
-        const numFrames = sampleRate * durationSec;
-        const buffer = new ArrayBuffer(44 + numFrames * 2);
-        const view = new DataView(buffer);
-
-        const writeStr = (offset, str) => {
-            for (let i = 0; i < str.length; i++) {
-                view.setUint8(offset + i, str.charCodeAt(i));
+// Ensure YouTube audio is unmuted and properly voiced
+function ensureAudioOutput() {
+    if (youtubePlayer) {
+        try {
+            if (typeof youtubePlayer.unMute === "function") {
+                youtubePlayer.unMute();
             }
-        };
-
-        writeStr(0, "RIFF");
-        view.setUint32(4, 36 + numFrames * 2, true);
-        writeStr(8, "WAVE");
-        writeStr(12, "fmt ");
-        view.setUint32(16, 16, true);
-        view.setUint16(20, 1, true); // PCM
-        view.setUint16(22, 1, true); // Mono
-        view.setUint32(24, sampleRate, true);
-        view.setUint32(28, sampleRate * 2, true);
-        view.setUint16(32, 2, true);
-        view.setUint16(34, 16, true);
-        writeStr(36, "data");
-        view.setUint32(40, numFrames * 2, true);
-
-        const blob = new Blob([buffer], { type: "audio/wav" });
-        return URL.createObjectURL(blob);
-    } catch (e) {
-        return "data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YRAAAAAAAAAAAAAAAAAA";
-    }
-}
-
-function initKeepAliveAudio() {
-    if (keepAliveAudio) return keepAliveAudio;
-
-    try {
-        keepAliveAudio = document.createElement("audio");
-        keepAliveAudio.id = "nostalgic-background-keepalive";
-        keepAliveAudio.setAttribute("playsinline", "true");
-        keepAliveAudio.setAttribute("webkit-playsinline", "true");
-        keepAliveAudio.setAttribute("x5-playsinline", "true");
-        keepAliveAudio.preload = "auto";
-        keepAliveAudio.loop = true;
-        keepAliveAudio.volume = 0.01;
-        keepAliveAudio.src = getSilentAudioBlobUrl();
-        keepAliveAudio.style.cssText = "position:absolute; width:1px; height:1px; opacity:0.01; pointer-events:none; left:-9999px; top:-9999px;";
-        
-        document.body.appendChild(keepAliveAudio);
-    } catch (err) {
-        console.warn("Could not create keep-alive audio element:", err);
-    }
-    return keepAliveAudio;
-}
-
-function playKeepAliveAudio() {
-    if (!window.isBackgroundAudioEnabled) return;
-    try {
-        const audio = initKeepAliveAudio();
-        if (audio && audio.paused) {
-            const p = audio.play();
-            if (p && typeof p.catch === "function") {
-                p.catch(() => {});
+            if (typeof youtubePlayer.isMuted === "function" && youtubePlayer.isMuted()) {
+                youtubePlayer.unMute();
             }
-        }
-    } catch (e) {}
-}
-
-function pauseKeepAliveAudio() {
-    try {
-        if (keepAliveAudio && !keepAliveAudio.paused) {
-            keepAliveAudio.pause();
-        }
-    } catch (e) {}
+            if (typeof youtubePlayer.setVolume === "function") {
+                youtubePlayer.setVolume(window.playerVolume || 100);
+            }
+        } catch (e) {}
+    }
 }
 
 async function requestWakeLock() {
@@ -185,7 +121,7 @@ function setupMediaSessionHandlers() {
             if (youtubePlayer && typeof youtubePlayer.playVideo === "function") {
                 youtubePlayer.playVideo();
             }
-            playKeepAliveAudio();
+            ensureAudioOutput();
             requestWakeLock();
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.playbackState = "playing";
@@ -198,7 +134,6 @@ function setupMediaSessionHandlers() {
             if (youtubePlayer && typeof youtubePlayer.pauseVideo === "function") {
                 youtubePlayer.pauseVideo();
             }
-            pauseKeepAliveAudio();
             releaseWakeLock();
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.playbackState = "paused";
@@ -254,7 +189,6 @@ function setupMediaSessionHandlers() {
             if (youtubePlayer && typeof youtubePlayer.pauseVideo === "function") {
                 youtubePlayer.pauseVideo();
             }
-            pauseKeepAliveAudio();
             releaseWakeLock();
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.playbackState = "paused";
@@ -283,53 +217,21 @@ document.addEventListener("visibilitychange", function () {
         
         // If actively playing and not paused by user, protect audio playback
         if (window.isPlaybackActive && !window.userInitiatedPause) {
-            playKeepAliveAudio();
-
-            // Mobile Chrome / Safari may pause iframe video when hidden. Resume immediately!
-            if (backgroundResumeTimer) clearTimeout(backgroundResumeTimer);
-            backgroundResumeTimer = setTimeout(function () {
+            setTimeout(function () {
                 if (!window.userInitiatedPause && youtubePlayer && typeof youtubePlayer.getPlayerState === "function") {
                     try {
                         const st = youtubePlayer.getPlayerState();
-                        if (st === 2 || st === -1) { // 2 = PAUSED, -1 = UNSTARTED
-                            console.log("Background Watcher: Resuming audio playback...");
+                        if (st === 2 || st === -1) {
                             youtubePlayer.playVideo();
                         }
+                        ensureAudioOutput();
                     } catch (e) {}
                 }
-            }, 180);
-
-            // Maintain watchdog while screen is off / app in background
-            if (backgroundKeepAliveInterval) clearInterval(backgroundKeepAliveInterval);
-            let checks = 0;
-            backgroundKeepAliveInterval = setInterval(function () {
-                checks++;
-                if (checks > 45 || !document.hidden || window.userInitiatedPause) {
-                    clearInterval(backgroundKeepAliveInterval);
-                    backgroundKeepAliveInterval = null;
-                    return;
-                }
-                if (youtubePlayer && typeof youtubePlayer.getPlayerState === "function") {
-                    try {
-                        const st = youtubePlayer.getPlayerState();
-                        if (st === 2 && !window.userInitiatedPause) {
-                            console.log("Background Watchdog: Keeping stream alive...");
-                            youtubePlayer.playVideo();
-                        }
-                    } catch (e) {}
-                }
-            }, 1200);
+            }, 100);
         }
     } else {
         console.log("App returned to foreground");
-        if (backgroundResumeTimer) {
-            clearTimeout(backgroundResumeTimer);
-            backgroundResumeTimer = null;
-        }
-        if (backgroundKeepAliveInterval) {
-            clearInterval(backgroundKeepAliveInterval);
-            backgroundKeepAliveInterval = null;
-        }
+        ensureAudioOutput();
 
         // Resync UI elements
         if (youtubePlayer && typeof youtubePlayer.getPlayerState === "function") {
@@ -1018,7 +920,7 @@ function handlePlayerStateChange(event) {
 
         window.isPlaybackActive = true;
         window.userInitiatedPause = false;
-        playKeepAliveAudio();
+        ensureAudioOutput();
         requestWakeLock();
         if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = "playing";
@@ -1062,19 +964,19 @@ function handlePlayerStateChange(event) {
         );
 
         // If tab/phone screen is off or in background and user did NOT manually tap pause,
-        // this was triggered by browser's background video policy. Auto-resume immediately!
+        // this was triggered by browser's background video policy. Auto-resume immediately with sound!
         if (document.hidden && !window.userInitiatedPause && window.isBackgroundAudioEnabled) {
             console.log("Background pause detected. Auto-resuming music...");
             setTimeout(function () {
                 if (!window.userInitiatedPause && youtubePlayer && typeof youtubePlayer.playVideo === "function") {
                     youtubePlayer.playVideo();
+                    ensureAudioOutput();
                 }
-            }, 120);
+            }, 100);
             return;
         }
 
         window.isPlaybackActive = false;
-        pauseKeepAliveAudio();
         releaseWakeLock();
         if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = "paused";
@@ -1552,7 +1454,6 @@ function togglePlayPause() {
 
         window.userInitiatedPause = true;
         window.isPlaybackActive = false;
-        pauseKeepAliveAudio();
         releaseWakeLock();
         if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = "paused";
@@ -1572,7 +1473,7 @@ function togglePlayPause() {
 
         window.userInitiatedPause = false;
         window.isPlaybackActive = true;
-        playKeepAliveAudio();
+        ensureAudioOutput();
         requestWakeLock();
         if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = "playing";
@@ -1602,7 +1503,7 @@ function nextSong() {
 
     window.userInitiatedPause = false;
     window.isPlaybackActive = true;
-    playKeepAliveAudio();
+    ensureAudioOutput();
     requestWakeLock();
 
     // 0. Check Playback Queue first
@@ -1656,7 +1557,7 @@ window.playSongById = function (videoId, songTitle, artist) {
 
     window.userInitiatedPause = false;
     window.isPlaybackActive = true;
-    playKeepAliveAudio();
+    ensureAudioOutput();
     requestWakeLock();
 
     try {
@@ -1712,7 +1613,7 @@ function previousSong() {
 
     window.userInitiatedPause = false;
     window.isPlaybackActive = true;
-    playKeepAliveAudio();
+    ensureAudioOutput();
     requestWakeLock();
 
     try {
@@ -2457,686 +2358,38 @@ window.playSpecificSong = function (videoId, customTitle, modeId, artistName) {
 };
 
 /* =========================================================
-   MONGODB WISHLIST INTEGRATION
+   WISHLIST INTEGRATION HELPER
+   Delegates directly to wishlist.js as the single source of truth
    ========================================================= */
 
 (function () {
-
-    let lastWishlistVideoId = null;
-    let currentWishlistLiked = false;
-    let wishlistBusy = false;
-
-    /* ---------------------------------------------------------
-       TOAST
-       --------------------------------------------------------- */
-
-    function wishlistToast(message, type = "success") {
-
-        let container = document.getElementById("wishlist-toast-container");
-
-        if (!container) {
-
-            container = document.createElement("div");
-
-            container.id = "wishlist-toast-container";
-
-            container.style.cssText = `
-                position: fixed;
-                left: 50%;
-                bottom: 32px;
-                transform: translateX(-50%);
-                z-index: 999999;
-                pointer-events: none;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-            `;
-
-            document.body.appendChild(container);
-        }
-
-        const toast = document.createElement("div");
-
-        toast.textContent = message;
-
-        toast.style.cssText = `
-            padding: 12px 18px;
-            border-radius: 14px;
-            background: rgba(20,20,20,0.94);
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.35);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.12);
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all .25s ease;
-        `;
-
-        if (type === "error") {
-            toast.style.borderColor = "rgba(255,80,80,.45)";
-        }
-
-        container.appendChild(toast);
-
-        requestAnimationFrame(() => {
-
-            toast.style.opacity = "1";
-            toast.style.transform = "translateY(0)";
-        });
-
-        setTimeout(() => {
-
-            toast.style.opacity = "0";
-            toast.style.transform = "translateY(10px)";
-
-            setTimeout(() => {
-                toast.remove();
-            }, 250);
-
-        }, 2200);
-    }
-
-
-    /* ---------------------------------------------------------
-       GET CURRENT SONG
-       --------------------------------------------------------- */
-
-    function getCurrentWishlistSong() {
-
-        if (!youtubePlayer) {
-            return null;
-        }
-
+    window.getCurrentPlayingTrackInfo = function () {
+        if (!youtubePlayer) return null;
         try {
+            const data = (typeof youtubePlayer.getVideoData === 'function') ? youtubePlayer.getVideoData() : null;
+            const videoId = data && data.video_id ? data.video_id : null;
+            if (!videoId) return null;
 
-            const data = youtubePlayer.getVideoData();
+            const titleElement = document.getElementById('song-title');
+            const sourceElement = document.getElementById('song-source');
 
-            if (!data || !data.video_id) {
-                return null;
-            }
-
-            const videoId = data.video_id;
-
-            const titleElement =
-                document.getElementById("song-title");
-
-            const sourceElement =
-                document.getElementById("song-source");
-
-            const title =
-                titleElement?.textContent?.trim() ||
-                data.title ||
-                "Nostalgic Song";
-
-            let artist =
-                data.author ||
-                "YouTube Music";
-
-            /*
-             * song-source normally contains:
-             * Artist • Era
-             */
+            const title = titleElement?.textContent?.trim() || data.title || 'Nostalgic Song';
+            let artist = data.author || 'YouTube Music';
             if (sourceElement) {
-
-                const sourceText =
-                    sourceElement.textContent.trim();
-
-                if (sourceText) {
-
-                    const parts =
-                        sourceText.split("•");
-
-                    if (parts[0]?.trim()) {
-                        artist = parts[0].trim();
-                    }
-                }
+                const parts = sourceElement.textContent.trim().split('•');
+                if (parts[0]?.trim()) artist = parts[0].trim();
             }
-
-            const era =
-                currentMode?.name ||
-                "Nostalgic Radio";
-
-            const thumbnail =
-                `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
             return {
-                video_id: videoId,
-                original_title: data.title || title,
-                custom_title: title,
-                artist: artist,
-                thumbnail: thumbnail,
-                era: era
+                videoId: videoId,
+                title: title,
+                originalTitle: title,
+                author: artist,
+                mode: currentMode || { name: 'Nostalgic Radio', id: 'papa-era' },
+                albumArt: 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg'
             };
-
-        } catch (error) {
-
-            console.error(
-                "Could not get current wishlist song:",
-                error
-            );
-
+        } catch (e) {
             return null;
         }
-    }
-
-
-    /* ---------------------------------------------------------
-       UPDATE HEART UI
-       --------------------------------------------------------- */
-
-    function updateWishlistButtons(liked) {
-
-        currentWishlistLiked = liked;
-
-        const buttons = [
-            document.getElementById("like-button"),
-            document.getElementById("spotify-sticky-like-btn"),
-            document.getElementById("opt-action-like")
-        ];
-
-        buttons.forEach(button => {
-
-            if (!button) {
-                return;
-            }
-
-            button.classList.toggle(
-                "liked",
-                liked
-            );
-
-            button.setAttribute(
-                "aria-pressed",
-                liked ? "true" : "false"
-            );
-
-            if (button.id === "like-button") {
-
-                button.title =
-                    liked
-                        ? "Remove from Wishlist"
-                        : "Save to Memories Wishlist";
-
-                button.setAttribute(
-                    "aria-label",
-                    liked
-                        ? "Remove song from wishlist"
-                        : "Save song to memories wishlist"
-                );
-            }
-
-            if (
-                button.id ===
-                "spotify-sticky-like-btn"
-            ) {
-
-                button.title =
-                    liked
-                        ? "Remove from Wishlist"
-                        : "Save to Wishlist";
-            }
-
-            if (
-                button.id ===
-                "opt-action-like"
-            ) {
-
-                const title =
-                    document.getElementById(
-                        "opt-action-like-title"
-                    );
-
-                if (title) {
-
-                    title.textContent =
-                        liked
-                            ? "Remove from Memories Wishlist"
-                            : "Save to Memories Wishlist";
-                }
-            }
-        });
-    }
-
-
-    /* ---------------------------------------------------------
-       CHECK WHETHER CURRENT SONG IS ALREADY LIKED
-       --------------------------------------------------------- */
-
-    async function syncWishlistState(videoId) {
-
-        if (!videoId) {
-            return;
-        }
-
-        try {
-
-            const response =
-                await fetch(
-                    `/api/wishlist/check/${encodeURIComponent(videoId)}`,
-                    {
-                        method: "GET",
-                        credentials: "same-origin"
-                    }
-                );
-
-            if (response.status === 401) {
-
-                updateWishlistButtons(false);
-
-                return;
-            }
-
-            if (!response.ok) {
-
-                console.warn(
-                    "Wishlist check failed:",
-                    response.status
-                );
-
-                return;
-            }
-
-            const data =
-                await response.json();
-
-            if (data.success) {
-
-                updateWishlistButtons(
-                    Boolean(data.liked)
-                );
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Wishlist check error:",
-                error
-            );
-        }
-    }
-
-
-    /* ---------------------------------------------------------
-       ADD SONG
-       --------------------------------------------------------- */
-
-    async function addCurrentSongToWishlist(song) {
-
-        if (!song || !song.video_id) {
-
-            wishlistToast(
-                "No song is currently playing.",
-                "error"
-            );
-
-            return false;
-        }
-
-        try {
-
-            const response =
-                await fetch(
-                    "/api/wishlist",
-                    {
-                        method: "POST",
-
-                        credentials: "same-origin",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify(song)
-                    }
-                );
-
-            if (response.status === 401) {
-
-                wishlistToast(
-                    "Please login first.",
-                    "error"
-                );
-
-                return false;
-            }
-
-            const data =
-                await response.json();
-
-            if (!response.ok || !data.success) {
-
-                wishlistToast(
-                    data.message ||
-                    "Could not save song.",
-                    "error"
-                );
-
-                return false;
-            }
-
-            updateWishlistButtons(true);
-
-            if (data.already_exists) {
-
-                wishlistToast(
-                    "Already in your wishlist ❤️"
-                );
-
-            } else {
-
-                wishlistToast(
-                    "Added to your wishlist ❤️"
-                );
-            }
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Add wishlist error:",
-                error
-            );
-
-            wishlistToast(
-                "Something went wrong while saving.",
-                "error"
-            );
-
-            return false;
-        }
-    }
-
-
-    /* ---------------------------------------------------------
-       REMOVE SONG
-       --------------------------------------------------------- */
-
-    async function removeCurrentSongFromWishlist(song) {
-
-        if (!song || !song.video_id) {
-            return false;
-        }
-
-        try {
-
-            const response =
-                await fetch(
-                    `/api/wishlist/${encodeURIComponent(song.video_id)}`,
-                    {
-                        method: "DELETE",
-                        credentials: "same-origin"
-                    }
-                );
-
-            if (response.status === 401) {
-
-                wishlistToast(
-                    "Please login first.",
-                    "error"
-                );
-
-                return false;
-            }
-
-            const data =
-                await response.json();
-
-            if (!response.ok || !data.success) {
-
-                wishlistToast(
-                    data.message ||
-                    "Could not remove song.",
-                    "error"
-                );
-
-                return false;
-            }
-
-            updateWishlistButtons(false);
-
-            if (data.removed) {
-
-                wishlistToast(
-                    "Removed from wishlist."
-                );
-
-            } else {
-
-                wishlistToast(
-                    "Song was not in your wishlist."
-                );
-            }
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Remove wishlist error:",
-                error
-            );
-
-            wishlistToast(
-                "Something went wrong.",
-                "error"
-            );
-
-            return false;
-        }
-    }
-
-
-    /* ---------------------------------------------------------
-       TOGGLE LIKE
-       --------------------------------------------------------- */
-
-    async function toggleWishlist() {
-
-        if (wishlistBusy) {
-            return;
-        }
-
-        const song =
-            getCurrentWishlistSong();
-
-        if (!song) {
-
-            wishlistToast(
-                "Please wait for the song to load.",
-                "error"
-            );
-
-            return;
-        }
-
-        wishlistBusy = true;
-
-        try {
-
-            if (currentWishlistLiked) {
-
-                await removeCurrentSongFromWishlist(
-                    song
-                );
-
-            } else {
-
-                await addCurrentSongToWishlist(
-                    song
-                );
-            }
-
-        } finally {
-
-            wishlistBusy = false;
-        }
-    }
-
-
-    /* ---------------------------------------------------------
-       BUTTON INITIALIZATION
-       --------------------------------------------------------- */
-
-    function initializeWishlistButtons() {
-
-        const buttonIds = [
-            "like-button",
-            "spotify-sticky-like-btn",
-            "opt-action-like"
-        ];
-
-        buttonIds.forEach(id => {
-
-            const button =
-                document.getElementById(id);
-
-            if (!button) {
-                return;
-            }
-
-            /*
-             * Prevent duplicate listeners
-             */
-            if (
-                button.dataset.wishlistListener ===
-                "true"
-            ) {
-                return;
-            }
-
-            button.dataset.wishlistListener =
-                "true";
-
-            button.addEventListener(
-                "click",
-                function (event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-                    toggleWishlist();
-                }
-            );
-        });
-
-        console.log(
-            "MongoDB wishlist buttons initialized."
-        );
-    }
-
-
-    /* ---------------------------------------------------------
-       WATCH CURRENT YOUTUBE SONG
-       --------------------------------------------------------- */
-
-    function watchCurrentSong() {
-
-        if (!youtubePlayer) {
-            return;
-        }
-
-        try {
-
-            const data =
-                youtubePlayer.getVideoData();
-
-            if (!data || !data.video_id) {
-                return;
-            }
-
-            const videoId =
-                data.video_id;
-
-            /*
-             * Song changed
-             */
-            if (
-                lastWishlistVideoId !==
-                videoId
-            ) {
-
-                lastWishlistVideoId =
-                    videoId;
-
-                /*
-                 * Reset first so UI never
-                 * shows previous song's heart.
-                 */
-                updateWishlistButtons(false);
-
-                syncWishlistState(
-                    videoId
-                );
-            }
-
-        } catch (error) {
-
-            /*
-             * Player may not be ready yet.
-             */
-        }
-    }
-
-
-    /* ---------------------------------------------------------
-       START
-       --------------------------------------------------------- */
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-
-            initializeWishlistButtons();
-
-            /*
-             * Buttons can be rendered after
-             * initial DOM load, so retry.
-             */
-            setTimeout(
-                initializeWishlistButtons,
-                500
-            );
-
-            setTimeout(
-                initializeWishlistButtons,
-                1500
-            );
-
-            /*
-             * Watch current YouTube video.
-             */
-            setInterval(
-                watchCurrentSong,
-                1000
-            );
-
-        }
-    );
-
-
-    /* ---------------------------------------------------------
-       EXPOSE FOR OTHER APP SCRIPTS
-       --------------------------------------------------------- */
-
-    window.NostalgicWishlist = {
-
-        add: addCurrentSongToWishlist,
-
-        remove: removeCurrentSongFromWishlist,
-
-        toggle: toggleWishlist,
-
-        sync: syncWishlistState,
-
-        getCurrentSong:
-            getCurrentWishlistSong
     };
-
-
 })();

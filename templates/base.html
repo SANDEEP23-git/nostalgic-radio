@@ -36,6 +36,11 @@
             isAuthenticated: {{ 'true' if is_authenticated else 'false' }},
             user: {{ current_user_json | safe if current_user_json else 'null' }}
         };
+        try {
+            window.currentUser = window.SERVER_AUTH.user || JSON.parse(localStorage.getItem("nostalgic_radio_user") || "null");
+        } catch(e) {
+            window.currentUser = window.SERVER_AUTH.user || null;
+        }
     </script>
 
 
