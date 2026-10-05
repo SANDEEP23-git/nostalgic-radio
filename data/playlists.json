@@ -6,88 +6,101 @@
             "icon": "📻",
             "description": "Purane zamane ke evergreen gaane",
             "background": "papa-era.jpeg",
-            "youtube_playlist_id": "PLafSq5UblCNWzrBiEOwBeIdoU8AFXfTqp"
+            "youtube_playlist_id": "PLafSq5UblCNWzrBiEOwBeIdoU8AFXfTqp",
+            "color": "#ffaa33",
+            "glow": "rgba(255, 170, 51, 0.45)"
         },
-
         {
             "id": "90s-era",
             "name": "90s Era",
             "icon": "💿",
             "description": "90s ki golden memories",
             "background": "90s.jpeg",
-            "youtube_playlist_id": "PLAFjPVdERAkt7jNU1XW7EWXHLyYyf7Sux"
+            "youtube_playlist_id": "PLAFjPVdERAkt7jNU1XW7EWXHLyYyf7Sux",
+            "color": "#ff3399",
+            "glow": "rgba(255, 51, 153, 0.45)"
         },
-
         {
             "id": "2000s-era",
             "name": "2000s Era",
             "icon": "📀",
             "description": "Early 2000s nostalgia",
             "background": "2000s.jpeg",
-            "youtube_playlist_id": "PL71gzSkiT0QkByFoGuRrMfeWQhywnyGDO"
+            "youtube_playlist_id": "PL71gzSkiT0QkByFoGuRrMfeWQhywnyGDO",
+            "color": "#00d9ff",
+            "glow": "rgba(0, 217, 255, 0.45)"
         },
-
         {
             "id": "bihar-bangers",
             "name": "Bihar Bangers",
             "icon": "🌾",
             "description": "Bihar ke energetic favourites",
             "background": "bihar.jpeg",
-            "youtube_playlist_id": "PLPLEko54cndp5eDuMjI6Xtu2tWeAXRUTa"
+            "youtube_playlist_id": "PLPLEko54cndp5eDuMjI6Xtu2tWeAXRUTa",
+            "color": "#ff5522",
+            "glow": "rgba(255, 85, 34, 0.45)"
         },
-
         {
             "id": "punjabi-bangers",
             "name": "Punjabi Bangers",
             "icon": "🪕",
             "description": "Punjabi beats aur vibes",
             "background": "punjabi.jpeg",
-            "youtube_playlist_id": "PLiPktHBzHpQiDSrQ9Qeb8DvZREM1R02h1"
+            "youtube_playlist_id": "PLiPktHBzHpQiDSrQ9Qeb8DvZREM1R02h1",
+            "color": "#a6ff00",
+            "glow": "rgba(166, 255, 0, 0.45)"
         },
-
         {
             "id": "lofi",
             "name": "Lo-fi",
             "icon": "🌙",
             "description": "Slow beats for peaceful moments",
             "background": "lofi.jpeg",
-            "youtube_playlist_id": "PLisUszE0HnG4t6fLdlnuCY-Qztbeop17g"
+            "youtube_playlist_id": "PLisUszE0HnG4t6fLdlnuCY-Qztbeop17g",
+            "color": "#b44cff",
+            "glow": "rgba(180, 76, 255, 0.45)"
         },
-
         {
             "id": "sad",
             "name": "Sad Songs",
             "icon": "🌧️",
             "description": "Songs for quiet nights",
             "background": "sad.jpeg",
-            "youtube_playlist_id": "PL3-sRm8xAzY-w9GS19pLXMyFRTuJcuUjy"
+            "youtube_playlist_id": "PL3-sRm8xAzY-w9GS19pLXMyFRTuJcuUjy",
+            "color": "#39a7ff",
+            "glow": "rgba(57, 167, 255, 0.45)"
         },
-
         {
             "id": "romantic",
             "name": "Romantic",
             "icon": "❤️",
             "description": "Love, memories and emotions",
             "background": "romantic.jpeg",
-            "youtube_playlist_id": "OLAK5uy_n4SqeiX1D2swPXNzUufhV-hvW4fTuM1ts"
+            "youtube_playlist_id": "OLAK5uy_n4SqeiX1D2swPXNzUufhV-hvW4fTuM1ts",
+            "color": "#ff2a6d",
+            "glow": "rgba(255, 42, 109, 0.45)"
         },
-
         {
             "id": "truck",
             "name": "Truck Wala",
             "icon": "🚚",
             "description": "Highway aur long-drive songs",
             "background": "truck.jpeg",
-            "youtube_playlist_id": "PLeatb7hupNV_AWUl_7ttbsKeCQh8tF5N4"
+            "youtube_playlist_id": "PLAFjPVdERAkt7jNU1XW7EWXHLyYyf7Sux",
+            "test_video_id": "uK1p46_b1lU",
+            "color": "#ffbd39",
+            "glow": "rgba(255, 189, 57, 0.45)"
         },
-
         {
             "id": "night-drive",
             "name": "Night Drive",
             "icon": "🌃",
             "description": "Midnight roads and music",
             "background": "night-drive.jpeg",
-            "youtube_playlist_id": "PLgjH_aaN97q66AMeWeNyVxP2QHlfV82Rc"
+            "youtube_playlist_id": "PLisUszE0HnG4t6fLdlnuCY-Qztbeop17g",
+            "test_video_id": "kYJ8a2k0TfU",
+            "color": "#8b5cf6",
+            "glow": "rgba(139, 92, 246, 0.45)"
         }
     ]
 }

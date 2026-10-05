@@ -11,18 +11,65 @@
 <main class="radio-page">
 
 
-    <!-- =========================
-         BACKGROUND
-    ========================== -->
+
+
+    <div id="intro-loader" class="intro-loader" aria-label="Loading Nostalgic Radio">
+        <div class="loader-backdrop"></div>
+        <div class="loader-glass-card">
+            <div class="loader-header">
+                <span class="loader-badge">TUBE STEREO SYSTEM</span>
+                <span class="loader-freq" id="loader-freq-display">94.3 MHz</span>
+            </div>
+
+            <div class="loader-vinyl-wrapper">
+                <div class="loader-vinyl">
+                    <div class="loader-vinyl-rings"></div>
+                    <div class="loader-vinyl-center">
+                        <span class="loader-vinyl-icon">📻</span>
+                    </div>
+                </div>
+                <div class="loader-glow-orb"></div>
+            </div>
+
+            <h2 class="loader-title">NOSTALGIC RADIO</h2>
+            <p class="loader-quote" id="loader-quote-text">Tuning into golden memories &amp; forgotten melodies...</p>
+
+            <div class="loader-tuning-scale">
+                <div class="tuning-ticks">
+                    <span>88</span>
+                    <span>92</span>
+                    <span>96</span>
+                    <span>100</span>
+                    <span>104</span>
+                    <span>108</span>
+                </div>
+                <div class="tuning-track">
+                    <div class="tuning-needle" id="tuning-needle"></div>
+                </div>
+            </div>
+
+            <div class="loader-progress-bar">
+                <div class="loader-progress-fill" id="loader-progress-fill"></div>
+            </div>
+
+            <button id="loader-enter-button" class="loader-enter-button" type="button">
+                <span>ENTER RADIO</span>
+            </button>
+        </div>
+    </div>
+
+
+
+
+    <div id="ambient-cursor-glow" class="ambient-cursor-glow" aria-hidden="true"></div>
+    <div id="touch-glow" class="touch-glow" aria-hidden="true"></div>
+    <button id="exit-screensaver-btn" class="exit-screensaver-btn" type="button">✕ Exit Screensaver</button>
+
+
+
 
     <div class="background-layer background-layer-one"></div>
-
     <div class="background-layer background-layer-two"></div>
-
-
-    <!-- =========================
-         RAIN
-    ========================== -->
 
     <div
         id="rain-overlay"
@@ -30,925 +77,1646 @@
         aria-hidden="true"
     ></div>
 
-    <!-- =========================
-     VINTAGE / VHS OVERLAY
-========================== -->
-
-<div
-    id="vintage-overlay"
-    class="vintage-overlay"
-    aria-hidden="true"
->
-    <div class="vhs-scanlines"></div>
-    <div class="vhs-noise"></div>
-    <div class="vhs-vignette"></div>
-</div>
-
-    <!-- =========================
-         TOP NAVIGATION
-    ========================== -->
-
-    <header class="top-bar">
-
-
-        <!-- LEFT -->
-
-        <div class="top-left">
-
-            <span id="clock">
-                00:00
-            </span>
-
-
-            <span class="top-divider">
-                |
-            </span>
-
-
-            <span class="online-status">
-
-                <span class="online-dot"></span>
-
-                <span id="online-count">
-                    0
-                </span>
-
-            </span>
-
-        </div>
-
-
-        <!-- RIGHT -->
-
-        <div class="top-right">
-
-
-            <!-- ABOUT -->
-
-            <button
-                id="about-button"
-                class="nav-text-button"
-                type="button"
-            >
-                ABOUT
-            </button>
-
-
-            <!-- FAQ -->
-
-            <button
-                id="faq-button"
-                class="nav-text-button"
-                type="button"
-            >
-                FAQ
-            </button>
-
-
-            <!-- RAIN -->
-
-            <button
-                id="rain-button"
-                class="glass-button"
-                type="button"
-                title="Toggle Rain"
-            >
-                🌧️
-            </button>
-
-
-            <!-- SETTINGS -->
-
-            <button
-                id="settings-button"
-                class="glass-button"
-                type="button"
-                title="Settings"
-            >
-                ⚙
-            </button>
-
-
-            <!-- SCREENSAVER -->
-
-            <button
-                id="screensaver-button"
-                class="glass-button"
-                type="button"
-                title="Screensaver"
-            >
-                ◐
-            </button>
-
-
-        </div>
-
-    </header>
-
-
-
-    <!-- =========================
-         HERO
-    ========================== -->
-
-    <section class="hero-section">
-
-
-        <div class="hero-content">
-
-
-            <p
-                id="mode-label"
-                class="mode-label"
-            >
-                NOSTALGIC RADIO
-            </p>
-
-
-            <h1 id="mode-title">
-                Choose your music
-            </h1>
-
-
-            <p id="mode-description">
-                Select a mode and let the memories play.
-            </p>
-
-
-        </div>
-
-
-
-        <!-- =========================
-             EXPLORE
-        ========================== -->
-
-        <section class="explore-section">
-
-
-            <p class="explore-label">
-                EXPLORE
-            </p>
-
-
-            <div class="explore-line"></div>
-
-
-            <h2 class="explore-title">
-
-                <span class="explore-static">
-                    Explore
-                </span>
-
-
-                <span
-                    id="explore-changing-text"
-                    class="explore-changing-text"
-                >
-                    Movies
-                </span>
-
-            </h2>
-
-
-            <p class="explore-subtitle">
-                Music, memories &amp; moments
-            </p>
-
-
-            <div class="explore-scroll-indicator">
-
-                <span></span>
-
-            </div>
-
-
-        </section>
-
-
-    </section>
-
-
-
-    <!-- =========================
-         MUSIC PLAYER
-    ========================== -->
-
-    <section class="music-player">
-
-        <!-- AUDIO VISUALIZER -->
-        <div
-            id="audio-visualizer"
-            class="audio-visualizer"
-            aria-hidden="true"
-            >
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-        </div>
-        <!-- TRACK -->
-
-        <div class="track-section">
-
-
-            <!-- ALBUM -->
-
-            <div
-                id="album-art"
-                class="album-art"
-            >
-
-                <img
-                    id="album-image"
-                    src=""
-                    alt="Current song artwork"
-                >
-
-
-                <div class="disc-center"></div>
-
-            </div>
-
-
-
-            <!-- TRACK DETAILS -->
-
-            <div class="track-details">
-
-                <h2 id="song-title">
-                    Nostalgic Radio
-                </h2>
-
-
-                <p id="song-source">
-                    YouTube Music
-                </p>
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- =========================
-             PLAYER CONTROLS
-        ========================== -->
-
-        <div class="player-controls">
-
-
-            <button
-                id="previous-button"
-                class="player-button"
-                type="button"
-                title="Previous"
-            >
-                ‹
-            </button>
-
-
-            <button
-                id="play-button"
-                class="play-button"
-                type="button"
-                title="Play"
-            >
-                ▶
-            </button>
-
-
-            <button
-                id="next-button"
-                class="player-button"
-                type="button"
-                title="Next"
-            >
-                ›
-            </button>
-
-
-        </div>
-
-
-
-        <!-- =========================
-             PROGRESS
-        ========================== -->
-
-        <div class="progress-section">
-
-    <span id="current-time">
-        0:00
-    </span>
-
     <div
-        id="waveform-progress"
-        class="waveform-progress"
-    >
-
-        <svg
-            class="waveform-svg"
-            viewBox="0 0 600 70"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-        >
-
-            <!-- DIM / UNPLAYED WAVE -->
-
-            <path
-                class="waveform-line waveform-line-back"
-                d="M0 35
-                    L12 35
-                    L22 32
-                    L30 35
-                    L42 35
-                    L50 20
-                    L58 50
-                    L70 35
-                    L90 35
-                    L105 30
-                    L115 35
-                    L130 35
-                    L142 15
-                    L154 55
-                    L166 35
-                    L185 35
-                    L200 28
-                    L212 35
-                    L225 35
-                    L240 18
-                    L252 52
-                    L265 35
-                    L285 35
-                    L300 30
-                    L315 35
-                    L330 35
-                    L345 12
-                    L358 58
-                    L372 35
-                    L390 35
-                    L405 28
-                    L420 35
-                    L438 35
-                    L450 20
-                    L462 50
-                    L475 35
-                    L495 35
-                    L510 30
-                    L525 35
-                    L540 35
-                    L555 22
-                    L568 48
-                    L580 35
-                    L600 35"
-            ></path>
-
-
-            <!-- PLAYED WAVE -->
-
-            <path
-                class="waveform-line waveform-line-front"
-                d="M0 35
-                    L12 35
-                    L22 32
-                    L30 35
-                    L42 35
-                    L50 20
-                    L58 50
-                    L70 35
-                    L90 35
-                    L105 30
-                    L115 35
-                    L130 35
-                    L142 15
-                    L154 55
-                    L166 35
-                    L185 35
-                    L200 28
-                    L212 35
-                    L225 35
-                    L240 18
-                    L252 52
-                    L265 35
-                    L285 35
-                    L300 30
-                    L315 35
-                    L330 35
-                    L345 12
-                    L358 58
-                    L372 35
-                    L390 35
-                    L405 28
-                    L420 35
-                    L438 35
-                    450 20
-                    462 50
-                    475 35
-                    495 35
-                    510 30
-                    525 35
-                    540 35
-                    555 22
-                    568 48
-                    580 35
-                    600 35"
-            ></path>
-
-        </svg>
-
-
-        <!-- INVISIBLE SEEK CONTROL -->
-
-        <input
-            id="progress-control"
-            type="range"
-            min="0"
-            max="100"
-            value="0"
-            aria-label="Song progress"
-        >
-
-    </div>
-
-    <span id="duration">
-        0:00
-    </span>
-
-</div>
-
-
-    </section>
-
-
-
-    <!-- =========================
-         MUSIC MODE BUTTON
-    ========================== -->
-
-    <button
-        id="mode-button"
-        class="mode-button"
-        type="button"
-    >
-        ☰ &nbsp; MUSIC MODES
-    </button>
-
-
-
-    <!-- =========================
-         MUSIC MODE PANEL
-    ========================== -->
-
-    <aside
-        id="mode-panel"
-        class="mode-panel"
+        id="vintage-overlay"
+        class="vintage-overlay"
         aria-hidden="true"
     >
+        <div class="vhs-scanlines"></div>
+        <div class="vhs-noise"></div>
+        <div class="vhs-vignette"></div>
+    </div>
 
 
+
+    <div id="page-login-reviews" class="auth-gate-view" style="display: none;">
+        <div class="auth-gate-wrapper">
+            
+            <header class="auth-gate-header">
+                <div class="gate-brand-left">
+                    <span class="gate-radio-icon">📻</span>
+                    <div>
+                        <span class="gate-brand-badge">GOLDEN FREQUENCIES</span>
+                        <h2 class="gate-brand-title">NOSTALGIC RADIO</h2>
+                    </div>
+                </div>
+
+                <div class="gate-header-right">
+                
+                    <button id="gate-nav-login-btn" class="nav-text-button active" type="button" title="Sign In or Create Pass">
+                        LOGIN / SIGNUP
+                    </button>
+
+                    
+                    <button id="gate-nav-reviews-btn" class="nav-text-button" type="button" title="What Listeners Are Saying">
+                        REVIEWS
+                    </button>
+
+                    
+                    <div class="gate-clock-box">
+                        <span id="gate-clock">00:00</span>
+                    </div>
+                </div>
+            </header>
+
+            
+            <div id="auth-landing-card" class="auth-landing-card glow-mode-login">
+                <button id="gate-card-close-btn" class="gate-card-close-btn" type="button" title="Minimize / Hide Form" aria-label="Close form">×</button>
+
+                <div class="auth-card-hero-badge">AUTHENTICATION PASS</div>
+                <h2 class="auth-landing-title">Step Into The Golden Eras</h2>
+                <p class="auth-landing-subtitle">Create your account or sign in to access the vintage radio, custom memory titles &amp; playlists.</p>
+
+                
+                <div id="auth-card-alert" class="auth-card-alert" style="display: none;" role="alert"></div>
+
+                
+                <div class="auth-gate-tabs">
+                    <button id="gate-tab-login" class="gate-tab-btn active" type="button">Sign In</button>
+                    <button id="gate-tab-signup" class="gate-tab-btn" type="button">Create Account</button>
+                </div>
+
+                
+                <form id="gate-login-form" class="auth-gate-form active">
+                    <div class="auth-field-group">
+                        <label for="gate-login-email">Username or Email</label>
+                        <input type="text" id="gate-login-email" class="glass-input" placeholder="e.g. Sumera or snxuuuu@gmail.com" required autocomplete="username">
+                    </div>
+
+                    <div class="auth-field-group">
+                        <div class="auth-field-header">
+                            <label for="gate-login-password">Password</label>
+                            <button type="button" id="gate-forgot-pass-btn" class="auth-forgot-link">Forgot password?</button>
+                        </div>
+                        <input type="password" id="gate-login-password" class="glass-input" placeholder="••••••••" required autocomplete="current-password">
+                    </div>
+
+                    <div class="auth-row remember-row">
+                        <label class="auth-checkbox">
+                            <input type="checkbox" id="gate-remember-me" checked>
+                            <span class="custom-chk"></span>
+                            <span>Keep me logged in</span>
+                        </label>
+                        <button type="button" id="gate-switch-to-signup" class="auth-sub-link auth-switch-link">Create Account &rarr;</button>
+                    </div>
+
+                    <button type="submit" id="gate-login-submit-btn" class="auth-submit-btn">
+                        <span>Sign In &amp; Listen</span>
+                    </button>
+                </form>
+
+                
+                <form id="gate-signup-form" class="auth-gate-form">
+                    <div class="auth-field-group">
+                        <label for="gate-signup-name">Your Full Name</label>
+                        <input type="text" id="gate-signup-name" class="glass-input" placeholder="e.g. Sumera Khan" required autocomplete="name">
+                    </div>
+
+                    <div class="auth-field-group">
+                        <label for="gate-signup-email">Email Address</label>
+                        <input type="email" id="gate-signup-email" class="glass-input" placeholder="e.g. sumera@example.com" required autocomplete="email">
+                    </div>
+
+                    <div class="auth-field-group">
+                        <label for="gate-signup-password">Create Password</label>
+                        <input type="password" id="gate-signup-password" class="glass-input" placeholder="••••••••" required minlength="4" autocomplete="new-password">
+                    </div>
+
+                    <div class="auth-field-group">
+                        <label for="gate-signup-era">Starting Favorite Era</label>
+                        <select id="gate-signup-era" class="glass-input glass-select">
+                            <option value="papa-era">Papa's Era (Evergreen Classics)</option>
+                            <option value="90s-era" selected>90s Era (Golden Memories)</option>
+                            <option value="2000s-era">2000s Era (Early 2000s Nostalgia)</option>
+                            <option value="romantic">Romantic (Love &amp; Emotions)</option>
+                            <option value="lofi">Lo-Fi (Peaceful Beats)</option>
+                            <option value="bihar-bangers">Bihar Bangers</option>
+                            <option value="punjabi-bangers">Punjabi Bangers</option>
+                            <option value="truck">Truck Wala</option>
+                            <option value="night-drive">Night Drive</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="gate-signup-submit-btn" class="auth-submit-btn">
+                        <span>Create Account in Database</span>
+                    </button>
+
+                    <div class="auth-bottom-switch">
+                        <button type="button" id="gate-switch-to-login" class="auth-sub-link auth-switch-link">Already registered? Sign In &rarr;</button>
+                    </div>
+                </form>
+
+                
+                <form id="gate-forgot-form" class="auth-gate-form">
+                    <div class="auth-forgot-box">
+                        <span class="auth-forgot-ico">🔐</span>
+                        <div class="auth-forgot-text">
+                            <strong>Reset Account Password</strong>
+                            <span>Enter your registered username or email to create a new password.</span>
+                        </div>
+                    </div>
+
+                    <div class="auth-field-group">
+                        <label for="gate-forgot-identifier">Username or Email</label>
+                        <input type="text" id="gate-forgot-identifier" class="glass-input" placeholder="e.g. Sumera or snxuuuu@gmail.com" required autocomplete="username">
+                    </div>
+
+                    <div class="auth-field-group">
+                        <label for="gate-forgot-new-password">New Password</label>
+                        <input type="password" id="gate-forgot-new-password" class="glass-input" placeholder="At least 4 characters" required minlength="4" autocomplete="new-password">
+                    </div>
+
+                    <div class="auth-field-group">
+                        <label for="gate-forgot-confirm-password">Confirm New Password</label>
+                        <input type="password" id="gate-forgot-confirm-password" class="glass-input" placeholder="Re-enter new password" required minlength="4" autocomplete="new-password">
+                    </div>
+
+                    <button type="submit" id="gate-forgot-submit-btn" class="auth-submit-btn auth-submit-gold">
+                        <span>Update Password in Database</span>
+                    </button>
+
+                    <div class="auth-bottom-switch">
+                        <button type="button" id="gate-forgot-back-to-login" class="auth-sub-link auth-switch-link">&larr; Remembered your password? Sign In</button>
+                    </div>
+                </form>
+            </div>
+
+            
+            <section id="gate-reviews-section" class="landing-reviews-section">
+                <div class="landing-reviews-header">
+                    <span class="reviews-eyebrow">COMMUNITY MEMORIES</span>
+                    <h2 class="reviews-headline">What Listeners Are Saying</h2>
+                    <p class="reviews-subtext">Real stories and nostalgia from listeners tuned into vintage frequencies</p>
+                </div>
+
+                <div class="landing-reviews-grid">
+                    
+                    <div class="landing-review-card">
+                        <div class="review-card-stars">★★★★★</div>
+                        <p class="review-card-text">"Listening to 90s Era while rain falls against my window feels like looking out a wet bus window in 1998. The tape sound texture and Mohd Rafi hits are pure soul therapy."</p>
+                        <div class="reviewer-meta">
+                            <div class="reviewer-avatar" style="background: linear-gradient(135deg, #ff3399, #ffaa33);">A</div>
+                            <div class="reviewer-info">
+                                <strong>Aarav Sharma</strong>
+                                <span>Tuned into 90s Era &amp; Rain</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="landing-review-card">
+                        <div class="review-card-stars">★★★★★</div>
+                        <p class="review-card-text">"I set the custom title to 'Papa's Chai Time' for our favorite track. The vinyl cassette player aesthetic brought tears to my dad's eyes when we played it over tea yesterday!"</p>
+                        <div class="reviewer-meta">
+                            <div class="reviewer-avatar" style="background: linear-gradient(135deg, #ffaa33, #ff5522);">S</div>
+                            <div class="reviewer-info">
+                                <strong>Sumera Khan</strong>
+                                <span>Papa's Era Enthusiast</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="landing-review-card">
+                        <div class="review-card-stars">★★★★★</div>
+                        <p class="review-card-text">"Night Drive mode with the lofi rain toggle turned on is absolute peace after a long stressful day at the office. Best retro music experience on the web."</p>
+                        <div class="reviewer-meta">
+                            <div class="reviewer-avatar" style="background: linear-gradient(135deg, #8b5cf6, #00d9ff);">V</div>
+                            <div class="reviewer-info">
+                                <strong>Vikram Redder</strong>
+                                <span>Night Drive Listener</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="landing-review-card">
+                        <div class="review-card-stars">★★★★★</div>
+                        <p class="review-card-text">"The way each era dynamically changes its glowing color and ambience is so gorgeous. Stack mode feels like flipping through genuine retro tape cases."</p>
+                        <div class="reviewer-meta">
+                            <div class="reviewer-avatar" style="background: linear-gradient(135deg, #00d9ff, #a6ff00);">P</div>
+                            <div class="reviewer-info">
+                                <strong>Pooja Verma</strong>
+                                <span>2000s &amp; Punjabi Bangers</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <footer class="landing-site-footer">
+                <p class="landing-footer-brand">NOSTALGIC RADIO</p>
+                <p class="landing-footer-tagline">Music, memories &amp; moments from golden eras.</p>
+                <div class="landing-footer-creator">
+                    <span>Created with ❤️ by Sandeep Patra</span>
+                    <span>•</span>
+                    <a class="footer-email" href="mailto:snxuuuu@gmail.com">snxuuuu@gmail.com</a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+
+
+    <div id="page-music-home" class="music-home-view" style="display: none;">
+
+        
+        <header class="top-bar">
+            
+            <div class="top-left">
+                <span id="clock">00:00</span>
+                <span class="top-divider">|</span>
+                <span class="online-status">
+                    <span class="online-dot"></span>
+                    <span id="online-count">0</span>
+                </span>
+            </div>
+
+            
+            <div class="top-right">
+                
+                <button id="top-search-btn" class="glass-button desktop-glass-nav-btn" type="button" title="Search Music" aria-label="Search">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+                    </svg>
+                </button>
+
+                
+                <button id="top-liked-btn" class="glass-button desktop-glass-nav-btn" type="button" title="Liked Songs" aria-label="Liked">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+
+                
+                <button id="top-memories-btn" class="glass-button desktop-glass-nav-btn" type="button" title="Memories & Music of the Week" aria-label="Memories">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                </button>
+
+                <
+                <button id="about-button" class="nav-text-button" type="button">
+                    ABOUT
+                </button>
+
+                
+                <button id="faq-button" class="nav-text-button" type="button">
+                    FAQ
+                </button>
+
+                
+                <button id="rain-button" class="glass-button" type="button" title="Toggle Rain">
+                    🌧️
+                </button>
+
+                
+                <button id="settings-button" class="glass-button" type="button" title="Settings, Profile & Wishlist">
+                    ⚙
+                </button>
+            </div>
+        </header>
+
+        
+        <div class="welcome-typing-area" id="welcome-typing-area">
+            <span class="welcome-prefix">Welcome, </span>
+            <span id="welcome-username-text" class="welcome-username-text"></span>
+            <span class="welcome-typing-cursor" aria-hidden="true">|</span>
+        </div>
+
+
+
+        
+        <div id="subview-home" class="app-subview active">
+            
+            <section class="hero-section">
+                <div class="explore-ticker" id="explore-ticker" title="Explore Nostalgic Radio">
+                    <span class="explore-pill-label">✨ EXPLORE</span>
+                    <span class="explore-pill-divider">/</span>
+                    <span id="explore-changing-text" class="explore-changing-text">Movies</span>
+                    <span class="explore-pill-sub">Music, memories &amp; moments</span>
+                </div>
+
+                <div class="hero-content">
+                    <p id="mode-label" class="mode-label">NOSTALGIC RADIO</p>
+                    <h1 id="mode-title">Choose your music</h1>
+                    <p id="mode-description">Select a mode and let the memories play.</p>
+                </div>
+            </section>
+
+            
+            <section class="music-player" id="music-player" title="Tap to expand full player">
+                
+                <button id="player-expand-btn" class="player-expand-indicator" type="button" title="Expand Spotify Player" aria-label="Expand player">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <polyline points="9 21 3 21 3 15"></polyline>
+                        <line x1="21" y1="3" x2="14" y2="10"></line>
+                        <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                </button>
+
+                
+                <div id="audio-visualizer" class="audio-visualizer" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+
+                
+                <div class="track-section" id="player-track-section">
+                    
+                    <div id="album-art" class="album-art">
+                        <img id="album-image" src="" alt="Current song artwork">
+                        <div class="disc-center"></div>
+                    </div>
+
+                    
+                    <div class="track-details">
+                        <div id="custom-memory-tag" class="custom-memory-tag" style="display: none;">
+                            <span class="memory-tag-icon">✨</span>
+                            <span id="custom-memory-tag-text">Papa's Memories</span>
+                        </div>
+
+                        <h2 id="song-title">Nostalgic Radio</h2>
+                        <p id="song-source">YouTube Music</p>
+                    </div>
+                </div>
+
+                
+                <div class="player-controls">
+                    <button id="previous-button" class="player-button" type="button" title="Previous">‹</button>
+                    <button id="play-button" class="play-button" type="button" title="Play">▶</button>
+                    <button id="next-button" class="player-button" type="button" title="Next">›</button>
+
+                    
+                    <button id="like-button" class="player-button like-button" type="button" title="Save to Memories Wishlist" aria-label="Save song to memories wishlist">
+                        <svg class="heart-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                
+                <div class="progress-section">
+                    <span id="current-time">0:00</span>
+
+                    <div id="waveform-progress" class="waveform-progress">
+                        <svg class="waveform-svg" viewBox="0 0 600 70" preserveAspectRatio="none" aria-hidden="true">
+                            <path class="waveform-line waveform-line-back" d="M0 35 L12 35 L22 32 L30 35 L42 35 L50 20 L58 50 L70 35 L90 35 L105 30 L115 35 L130 35 L142 15 L154 55 L166 35 L185 35 L200 28 L212 35 L225 35 L240 18 L252 52 L265 35 L285 35 L300 30 L315 35 L330 35 L345 12 L358 58 L372 35 L390 35 L405 28 L420 35 L438 35 L450 20 L462 50 L475 35 L495 35 L510 30 L525 35 L540 35 L555 22 L568 48 L580 35 L600 35"></path>
+                            <path class="waveform-line waveform-line-front" d="M0 35 L12 35 L22 32 L30 35 L42 35 L50 20 L58 50 L70 35 L90 35 L105 30 L115 35 L130 35 L142 15 L154 55 L166 35 L185 35 L200 28 L212 35 L225 35 L240 18 L252 52 L265 35 L285 35 L300 30 L315 35 L330 35 L345 12 L358 58 L372 35 L390 35 L405 28 L420 35 L438 35 L450 20 L462 50 L475 35 L495 35 L510 30 L525 35 L540 35 L555 22 L568 48 L580 35 L600 35"></path>
+                        </svg>
+
+                        <input id="progress-control" type="range" min="0" max="100" value="0" aria-label="Song progress">
+                    </div>
+
+                    <span id="duration">0:00</span>
+                </div>
+            </section>
+
+            
+            <div class="mode-button-wrap">
+                <button id="mode-button" class="mode-button" type="button">
+                    ☰ &nbsp; MUSIC MODES
+                </button>
+            </div>
+
+            
+            <footer class="site-footer">
+                <div class="footer-main">
+                    <p class="footer-brand">NOSTALGIC RADIO</p>
+                    <p class="footer-tagline">Music, memories &amp; moments from golden eras.</p>
+                </div>
+                <div class="footer-creator">
+                    <span class="footer-created">Created by</span>
+                    <span class="footer-name">Sandeep Patra</span>
+                    <a class="footer-email" href="mailto:snxuuuu@gmail.com">snxuuuu@gmail.com</a>
+                </div>
+                <div class="footer-bottom">
+                    <span>Made with ❤️ Sandeepuja</span>
+                    <span class="footer-dot">•</span>
+                    <span>Keep the memories playing.</span>
+                </div>
+            </footer>
+        </div>
+
+
+        <div id="subview-liked" class="app-subview" style="display: none;">
+            <div class="subview-page-container liked-page-container">
+
+                <div class="subview-top-header">
+                    <button id="liked-page-back-btn" class="subview-back-btn" type="button" aria-label="Go Back">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </button>
+                    <h2 class="subview-top-title">Liked</h2>
+                    <button id="liked-page-search-btn" class="subview-icon-btn" type="button" aria-label="Search liked songs">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </div>
+
+
+                <div class="liked-hero-section">
+                    <div class="liked-hero-artwork-wrap">
+                        <img id="liked-hero-artwork" src="/static/images/backgrounds/papa-era.jpeg" alt="Top Liked Song Cover Art">
+                        <div class="liked-hero-glow"></div>
+                    </div>
+
+                    <div class="liked-hero-details">
+                        <div class="liked-hero-title-row">
+                            <svg class="liked-heart-filled" viewBox="0 0 24 24" width="26" height="26" fill="#ffffff">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                            <h1 class="liked-hero-heading">Liked</h1>
+                        </div>
+
+
+                        <div class="liked-hero-actions">
+                            <button id="liked-shuffle-btn" class="liked-action-btn secondary" type="button">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <polyline points="16 3 21 3 21 8"></polyline>
+                                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                                    <polyline points="21 16 21 21 16 21"></polyline>
+                                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                                </svg>
+                                <span>Shuffle</span>
+                            </button>
+                            <button id="liked-play-all-btn" class="liked-action-btn primary" type="button">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                                <span>Play</span>
+                            </button>
+                            <button id="liked-hero-options-btn" class="liked-action-btn icon-only" type="button" aria-label="More options">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                                    <circle cx="12" cy="5" r="2"></circle>
+                                    <circle cx="12" cy="12" r="2"></circle>
+                                    <circle cx="12" cy="19" r="2"></circle>
+                                </svg>
+                            </button>
+                        </div>
+
+                        
+                        <div class="liked-meta-info">
+                            <span id="liked-meta-stats">0 songs • 0:00</span>
+                        </div>
+
+                        
+                        <div class="liked-about-card">
+                            <h3 class="liked-about-title">About</h3>
+                            <p id="liked-about-desc" class="liked-about-text">
+                                Liked is a personalized collection featuring your favorite songs. This playlist is automatically curated for your musical enjoyment.
+                            </p>
+                        </div>
+
+                        
+                        <div class="liked-sort-bar">
+                            <div class="liked-sort-wrapper">
+                                <button id="liked-sort-pill" class="liked-sort-pill" type="button" aria-haspopup="true" aria-expanded="false">
+                                    <span id="liked-sort-label">Date added</span>
+                                    <svg class="sort-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div id="liked-sort-dropdown" class="liked-sort-dropdown" style="display: none;">
+                                    <button class="sort-dropdown-option active" data-sort="date-desc" type="button">
+                                        <span class="sort-option-text">Date added (Newest)</span>
+                                        <span class="sort-check">✓</span>
+                                    </button>
+                                    <button class="sort-dropdown-option" data-sort="date-asc" type="button">
+                                        <span class="sort-option-text">Date added (Oldest)</span>
+                                        <span class="sort-check"></span>
+                                    </button>
+                                    <button class="sort-dropdown-option" data-sort="title-asc" type="button">
+                                        <span class="sort-option-text">Title (A to Z)</span>
+                                        <span class="sort-check"></span>
+                                    </button>
+                                    <button class="sort-dropdown-option" data-sort="artist-asc" type="button">
+                                        <span class="sort-option-text">Artist (A to Z)</span>
+                                        <span class="sort-check"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="liked-songs-list" class="liked-songs-list">
+                    
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="subview-search" class="app-subview" style="display: none;">
+            <div class="subview-page-container search-page-container">
+                
+                <div class="subview-top-header search-top-header">
+                    <button id="search-page-back-btn" class="subview-back-btn" type="button" aria-label="Go Back">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </button>
+                    <h2 class="subview-top-title">Search &amp; Explore</h2>
+                    <div style="width: 40px;"></div>
+                </div>
+
+                
+                <div class="search-input-shell">
+                    <svg class="search-input-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input id="retro-search-input" type="text" placeholder="Search YouTube Music..." autocomplete="off">
+                    <button id="search-clear-btn" class="search-clear-btn" type="button" style="display: none;">×</button>
+                    <div class="search-globe-icon" title="Explore Global Music">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                
+                <div class="search-sub-tabs">
+                    <button class="search-sub-tab active" data-tab="explore" type="button">Explore</button>
+                    <button class="search-sub-tab" data-tab="suggestions" type="button">Suggestions</button>
+                    <button class="search-sub-tab" data-tab="eras" type="button">Album</button>
+                </div>
+
+                
+                <div id="search-live-results" class="search-live-results" style="display: none;">
+                    <div class="search-results-header">Search Results</div>
+                    <div id="search-results-list" class="search-results-list"></div>
+                </div>
+
+                
+                <div id="search-explore-content" class="search-explore-content">
+                    <div class="explore-section-title">Moods &amp; moments</div>
+                    <div class="moods-pill-grid">
+                        <button class="mood-pill-card" data-mood="chill" type="button">Chill</button>
+                        <button class="mood-pill-card" data-mood="commute" type="button">Commute</button>
+                        <button class="mood-pill-card" data-mood="energize" type="button">Energize</button>
+                        <button class="mood-pill-card" data-mood="feel-good" type="button">Feel good</button>
+                        <button class="mood-pill-card" data-mood="focus" type="button">Focus</button>
+                        <button class="mood-pill-card" data-mood="gaming" type="button">Gaming</button>
+                        <button class="mood-pill-card" data-mood="party" type="button">Party</button>
+                        <button class="mood-pill-card" data-mood="romance" type="button">Romance</button>
+                        <button class="mood-pill-card" data-mood="sad" type="button">Sad</button>
+                        <button class="mood-pill-card" data-mood="sleep" type="button">Sleep</button>
+                        <button class="mood-pill-card" data-mood="workout" type="button">Workout</button>
+                    </div>
+
+                    <div class="explore-section-title" style="margin-top: 26px;">Genres &amp; Eras</div>
+                    <div class="genres-pill-grid">
+                        <button class="genre-pill-card" data-era="papa-era" type="button">Papa's Golden Era</button>
+                        <button class="genre-pill-card" data-era="90s-era" type="button">Unforgettable 90s</button>
+                        <button class="genre-pill-card" data-era="2000s-era" type="button">Early 2000s Hits</button>
+                        <button class="genre-pill-card" data-era="romantic" type="button">Evergreen Romance</button>
+                        <button class="genre-pill-card" data-era="sad" type="button">Dil Se Sad Classics</button>
+                        <button class="genre-pill-card" data-era="bihar-bangers" type="button">Bhojpuri &amp; Chhath Folk</button>
+                        <button class="genre-pill-card" data-era="punjabi-bangers" type="button">Punjabi Golden Hits</button>
+                        <button class="genre-pill-card" data-era="truck" type="button">Highway Dhaba Tracks</button>
+                        <button class="genre-pill-card" data-era="night-drive" type="button">Midnight Drive</button>
+                        <button class="genre-pill-card" data-era="lofi" type="button">Monsoon Lo-Fi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="subview-memories" class="app-subview" style="display: none;">
+            <div class="subview-page-container memories-page-container">
+                
+                <div class="subview-top-header">
+                    <button id="memories-page-back-btn" class="subview-back-btn" type="button" aria-label="Go Back">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </button>
+                    <h2 class="subview-top-title">Memories &amp; History</h2>
+                    <div style="width: 40px;"></div>
+                </div>
+
+                
+                <div class="memories-week-hero">
+                    <div class="week-hero-badge">✨ MUSIC OF THE WEEK</div>
+                    <div class="week-hero-card">
+                        <div class="week-hero-thumb-wrap">
+                            <img id="week-hero-img" src="/static/images/backgrounds/papa-era.jpeg" alt="Music of the week cover">
+                            <button id="week-hero-play-btn" class="week-hero-play-circle" type="button" title="Play Music of the Week">
+                                ▶
+                            </button>
+                        </div>
+                        <div class="week-hero-info">
+                            <div class="week-hero-tag">#1 Most Listened Song</div>
+                            <h3 id="week-hero-title" class="week-hero-song-title">Kahin Pyaar Na Ho Jaaye</h3>
+                            <p id="week-hero-artist" class="week-hero-artist-name">Kumar Sanu, Alka Yagnik</p>
+                            <div class="week-hero-stats-line">
+                                <span id="week-hero-plays">Played 12 times this week</span>
+                                <span class="dot">•</span>
+                                <span id="week-hero-era">90s Era</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="memories-stats-row">
+                    <div class="mem-stat-card">
+                        <div class="stat-number" id="mem-stat-minutes">42</div>
+                        <div class="stat-label">Minutes Listened</div>
+                    </div>
+                    <div class="mem-stat-card">
+                        <div class="stat-number" id="mem-stat-songs">14</div>
+                        <div class="stat-label">Songs Played</div>
+                    </div>
+                    <div class="mem-stat-card">
+                        <div class="stat-number" id="mem-stat-era">90s</div>
+                        <div class="stat-label">Top Era</div>
+                    </div>
+                </div>
+
+                
+                <div class="memories-history-section">
+                    <div class="memories-history-header">
+                        <h3>Your Retro Memories</h3>
+                        <button id="clear-memories-btn" class="clear-memories-link" type="button">Clear history</button>
+                    </div>
+                    <div id="memories-songs-list" class="memories-songs-list">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <nav id="echo-pill-nav" class="echo-pill-nav" aria-label="Mobile Navigation">
+            <div class="echo-nav-capsule">
+                <button id="echo-tab-home" class="echo-nav-pill active" type="button" data-view="home" title="Home">
+                    <span class="echo-pill-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                    </span>
+                    <span class="echo-pill-label">Home</span>
+                </button>
+
+                <button id="echo-tab-search" class="echo-nav-pill" type="button" data-view="search" title="Search">
+                    <span class="echo-pill-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+                        </svg>
+                    </span>
+                    <span class="echo-pill-label">Search</span>
+                </button>
+
+                <button id="echo-tab-liked" class="echo-nav-pill" type="button" data-view="liked" title="Liked">
+                    <span class="echo-pill-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12zm-7-2h2v-4h3V8h-4v4h-1z"/>
+                        </svg>
+                    </span>
+                    <span class="echo-pill-label">Liked</span>
+                </button>
+
+                <button id="echo-tab-memories" class="echo-nav-pill" type="button" data-view="memories" title="Memories & History">
+                    <span class="echo-pill-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.1">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </span>
+                    <span class="echo-pill-label">Memories</span>
+                </button>
+            </div>
+
+            
+            <button id="echo-more-btn" class="echo-round-fab" type="button" title="More Options & Eras" aria-label="More options">
+                <span class="fab-dots">•••</span>
+            </button>
+        </nav>
+
+        
+        <div id="echo-quick-sheet" class="echo-quick-sheet" aria-hidden="true">
+            <div class="echo-sheet-backdrop" id="echo-sheet-backdrop"></div>
+            <div class="echo-sheet-drawer">
+                <div class="echo-sheet-handle"></div>
+                <div class="echo-sheet-header">
+                    <h4>Nostalgic Radio</h4>
+                    <button id="close-echo-sheet" class="echo-sheet-close" type="button">×</button>
+                </div>
+                <div class="echo-sheet-items">
+                    <button id="qs-eras-btn" class="echo-sheet-item" type="button">
+                        <span class="qs-icon">📻</span>
+                        <div class="qs-text">
+                            <strong>All Eras &amp; Playlists</strong>
+                            <span>Switch between 60s, 70s, 90s, 2000s &amp; more</span>
+                        </div>
+                    </button>
+                    <button id="qs-rain-btn" class="echo-sheet-item" type="button">
+                        <span class="qs-icon">🌧️</span>
+                        <div class="qs-text">
+                            <strong>Rain &amp; Thunder Ambiance</strong>
+                            <span>Toggle soothing background rain sounds</span>
+                        </div>
+                    </button>
+                    <button id="qs-settings-btn" class="echo-sheet-item" type="button">
+                        <span class="qs-icon">⚙️</span>
+                        <div class="qs-text">
+                            <strong>Settings &amp; Audio Extras</strong>
+                            <span>Player style, screensaver &amp; sleep timer</span>
+                        </div>
+                    </button>
+                    <button id="qs-about-btn" class="echo-sheet-item" type="button">
+                        <span class="qs-icon">ℹ️</span>
+                        <div class="qs-text">
+                            <strong>About Nostalgic Radio</strong>
+                            <span>Creator info and story</span>
+                        </div>
+                    </button>
+                    <button id="qs-faq-btn" class="echo-sheet-item" type="button">
+                        <span class="qs-icon">❓</span>
+                        <div class="qs-text">
+                            <strong>FAQ &amp; Guide</strong>
+                            <span>Help and common questions</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <aside id="mode-panel" class="mode-panel" aria-hidden="true">
         <div class="mode-panel-content">
-
-
             <div class="mode-panel-header">
-
-
                 <div>
-
-                    <p class="small-label">
-                        NOSTALGIC RADIO
-                    </p>
-
-
-                    <h2>
-                        Choose your mode
-                    </h2>
-
+                    <p class="small-label">NOSTALGIC RADIO</p>
+                    <h2>Choose your era</h2>
                 </div>
 
+                <div class="mode-header-right">
+                    <div class="mode-view-toggle">
+                        <button id="view-stack-btn" class="view-toggle-btn active" type="button" title="3D Stack Deck View">
+                            🗂️ Stack
+                        </button>
+                        <button id="view-grid-btn" class="view-toggle-btn" type="button" title="Grid View">
+                            ▦ Grid
+                        </button>
+                    </div>
 
-                <button
-                    id="close-mode-button"
-                    class="close-button"
-                    type="button"
-                    title="Close"
-                >
-                    ×
-                </button>
-
-
+                    <button id="close-mode-button" class="close-button" type="button" title="Close">×</button>
+                </div>
             </div>
 
 
+            <div id="mode-stack-container" class="mode-stack-container">
+                <div class="stack-stage">
+                    <button id="stack-prev-btn" class="stack-arrow-btn prev" type="button" aria-label="Previous Era">‹</button>
+                    <div id="mode-stack-deck" class="mode-stack-deck"></div>
+                    <button id="stack-next-btn" class="stack-arrow-btn next" type="button" aria-label="Next Era">›</button>
+                </div>
+                <div class="stack-indicators" id="stack-indicators"></div>
+            </div>
 
-            <div
-                id="mode-list"
-                class="mode-list"
-            ></div>
-
-
+            
+            <div id="mode-list" class="mode-list" style="display: none;"></div>
         </div>
-
-
     </aside>
 
-
-
-    <!-- =========================
-         SETTINGS PANEL
-    ========================== -->
-
-    <aside
-        id="settings-panel"
-        class="settings-panel"
-        aria-hidden="true"
-    >
-
-
+    
+    <aside id="settings-panel" class="settings-panel" aria-hidden="true">
         <div class="settings-content">
-
-
             <div class="settings-header">
-
-
                 <div>
-
-                    <p class="small-label">
-                        SETTINGS
-                    </p>
-
-
-                    <h2>
-                        Appearance
-                    </h2>
-
+                    <p class="small-label">NOSTALGIC RADIO</p>
+                    <h2>Settings &amp; Memories</h2>
                 </div>
+                <button id="close-settings-button" class="close-button" type="button" title="Close">×</button>
+            </div>
 
+            
+            <div class="settings-profile-card">
+                <div class="settings-profile-left">
+                    <div class="settings-profile-avatar" id="settings-avatar-icon">👤</div>
+                    <div class="settings-profile-meta">
+                        <h4 id="settings-profile-name">Guest Listener</h4>
+                        <p id="settings-profile-email">Active account session</p>
+                    </div>
+                </div>
+                <div class="settings-profile-actions">
+                    <button id="signout-button" class="settings-signout-btn" type="button" title="Log Out from Nostalgic Radio">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Log Out</span>
+                    </button>
+                </div>
+            </div>
 
-                <button
-                    id="close-settings-button"
-                    class="close-button"
-                    type="button"
-                    title="Close"
-                >
-                    ×
+            
+            <div class="settings-tabs">
+                <button id="tab-pref-btn" class="settings-tab-btn active" type="button">
+                    ⚙️ Appearance &amp; Extras
                 </button>
-
-
+                <button id="tab-wishlist-btn" class="settings-tab-btn" type="button">
+                    ❤️ My Wishlist &amp; Memories <span id="wishlist-badge" class="tab-badge">0</span>
+                </button>
             </div>
 
-
-
-            <!-- PLAYER STYLE -->
-
-            <div class="setting-group">
-
-
-                <p class="setting-title">
-                    Player style
-                </p>
-
-
-                <div class="setting-options">
-
-
-                    <button
-                        class="setting-option selected"
-                        data-player-style="glass"
-                        type="button"
-                    >
-                        Glass
-                    </button>
-
-
-                    <button
-                        class="setting-option"
-                        data-player-style="solid"
-                        type="button"
-                    >
-                        Solid
-                    </button>
-
-
-                    <button
-                        class="setting-option"
-                        data-player-style="auto"
-                        type="button"
-                    >
-                        Auto
-                    </button>
-
-
+            
+            <div id="settings-pref-pane" class="settings-pane active">
+                <div class="setting-group">
+                    <p class="setting-title">Cinematic View</p>
+                    <div class="setting-action-row">
+                        <div class="action-info">
+                            <strong>◐ Screensaver Mode</strong>
+                            <p>Distraction-free ambient visualizer for deep listening.</p>
+                        </div>
+                        <button id="screensaver-button" class="settings-action-pill" type="button" title="Start Screensaver">
+                            <span>Start Screensaver</span>
+                            <span>◐</span>
+                        </button>
+                    </div>
                 </div>
 
+                <div class="setting-group">
+                    <p class="setting-title">Player style</p>
+                    <div class="setting-options">
+                        <button class="setting-option selected" data-player-style="glass" type="button">Glass</button>
+                        <button class="setting-option" data-player-style="solid" type="button">Solid</button>
+                        <button class="setting-option" data-player-style="auto" type="button">Auto</button>
+                    </div>
+                </div>
 
+                <div class="setting-group">
+                    <p class="setting-title">Atmosphere &amp; Illumination</p>
+                    <div class="setting-switch-row">
+                        <div class="switch-info">
+                            <strong>Soft Ambient Cursor Glow</strong>
+                            <p>Ethereal light follows your cursor and touches across the radio.</p>
+                        </div>
+                        <label class="switch-label">
+                            <input type="checkbox" id="pref-glow-toggle" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <p class="setting-title">Background &amp; Lock Screen Playback</p>
+                    <div class="setting-switch-row">
+                        <div class="switch-info">
+                            <strong>Background &amp; Screen-Off Music</strong>
+                            <p>Keeps playing when you switch apps or lock your phone screen, with lock-screen media controls.</p>
+                        </div>
+                        <label class="switch-label">
+                            <input type="checkbox" id="pref-bg-playback-toggle" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <p class="setting-title">Personalization &amp; Identity</p>
+                    <div class="setting-edit-profile-card">
+                        <label for="settings-edit-username" class="setting-sub-label">Change Display Name / Username</label>
+                        <div class="settings-input-btn-row">
+                            <input type="text" id="settings-edit-username" class="glass-input" placeholder="e.g. Sumera" maxlength="32">
+                            <button id="save-username-btn" class="settings-action-pill highlight" type="button">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <p class="setting-title">Account &amp; Session</p>
+                    <div class="setting-action-row">
+                        <div class="action-info">
+                            <strong id="session-username-display">Session</strong>
+                            <p id="session-status-subtext">Click Log Out to disconnect and return to login page.</p>
+                        </div>
+                        <button id="settings-logout-row-btn" class="settings-action-pill danger" type="button" title="Log Out from Nostalgic Radio">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            <span>Log Out</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
+            
+            <div id="settings-wishlist-pane" class="settings-pane">
+                <div class="wishlist-pane-header">
+                    <div>
+                        <h3 class="wishlist-pane-title">Saved Songs &amp; Custom Titles</h3>
+                        <p class="wishlist-pane-desc">
+                            Personalize your memories! Rename any song (e.g. <em>"Papa's era"</em>, <em>"College 90s memories"</em>) and access them whenever you tune in.
+                        </p>
+                    </div>
+                    <button id="wishlist-play-all" class="wishlist-action-btn" type="button">
+                        ▶ Play Wishlist
+                    </button>
+                </div>
 
+                <div id="wishlist-list" class="wishlist-list"></div>
+            </div>
         </div>
-
-
     </aside>
 
-
-
-    <!-- =========================
-         ABOUT PANEL
-    ========================== -->
-
-    <aside
-        id="about-panel"
-        class="info-panel"
-        aria-hidden="true"
-    >
-
-
+    
+    <aside id="about-panel" class="info-panel" aria-hidden="true">
         <div class="info-panel-content">
-
-
             <div class="info-panel-header">
-
-
                 <div>
-
-                    <p class="small-label">
-                        NOSTALGIC RADIO
-                    </p>
-
-
-                    <h2>
-                        About
-                    </h2>
-
+                    <p class="small-label">NOSTALGIC RADIO</p>
+                    <h2>About</h2>
                 </div>
-
-
-                <button
-                    id="close-about-button"
-                    class="close-button"
-                    type="button"
-                    title="Close"
-                >
-                    ×
-                </button>
-
-
+                <button id="close-about-button" class="close-button" type="button" title="Close">×</button>
             </div>
-
-
-
             <div class="info-body">
-
-
-                <p>
-                    A little place for old songs,
-                    memories and late-night vibes.
-                </p>
-
-
-                <p>
-                    Choose a music mode, sit back,
-                    and let the memories play.
-                </p>
-
-
+                <p>A little place for old songs, memories and late-night vibes.</p>
+                <p>Choose a music mode, sit back, and let the memories play.</p>
                 <div class="about-divider"></div>
-
-
-                <p class="about-small-text">
-                    Built for people who believe
-                    some songs never get old.
-                </p>
-
-
+                <p class="about-small-text">Built for people who believe some songs never get old.</p>
             </div>
-
-
         </div>
-
-
     </aside>
 
-
-
-    <!-- =========================
-         FAQ PANEL
-    ========================== -->
-
-    <aside
-        id="faq-panel"
-        class="info-panel"
-        aria-hidden="true"
-    >
-
-
+    
+    <aside id="faq-panel" class="info-panel" aria-hidden="true">
         <div class="info-panel-content">
-
-
             <div class="info-panel-header">
-
-
                 <div>
+                    <p class="small-label">NOSTALGIC RADIO</p>
+                    <h2>FAQ</h2>
+                </div>
+                <button id="close-faq-button" class="close-button" type="button" title="Close">×</button>
+            </div>
+            <div class="faq-list">
+                <details>
+                    <summary>How does the radio work?</summary>
+                    <p>Select a music mode and the corresponding playlist will play.</p>
+                </details>
+                <details>
+                    <summary>Where does the music come from?</summary>
+                    <p>Music is played through YouTube's embedded player.</p>
+                </details>
+                <details>
+                    <summary>Can I change the appearance?</summary>
+                    <p>Yes. Open Settings and choose Glass, Solid or Auto.</p>
+                </details>
+                <details>
+                    <summary>Can I turn the rain off?</summary>
+                    <p>Yes. Use the rain button in the top-right corner.</p>
+                </details>
+                <details>
+                    <summary>What is Screensaver mode?</summary>
+                    <p>Screensaver mode creates a distraction-free cinematic view for listening.</p>
+                </details>
+                <details>
+                    <summary>Can I play music in the background or with the phone screen off?</summary>
+                    <p>Yes! Nostalgic Radio supports seamless background and screen-off playback. When you switch to another app or turn off/lock your phone screen, music continues playing with active lock screen media controls.</p>
+                </details>
+            </div>
+        </div>
+    </aside>
 
-                    <p class="small-label">
-                        NOSTALGIC RADIO
-                    </p>
+    
+    <div id="edit-memory-modal" class="memory-modal" aria-hidden="true">
+        <div class="memory-modal-card">
+            <div class="memory-modal-header">
+                <div>
+                    <span class="small-label">PERSONALIZE THIS MEMORY</span>
+                    <h3 class="memory-modal-heading">Set Custom Song Title</h3>
+                </div>
+                <button id="close-memory-modal" class="close-button" type="button" title="Close">×</button>
+            </div>
 
+            <div class="memory-modal-body">
+                <p class="memory-modal-desc">
+                    Give this song your own personalized title or era memory (e.g. <em>"Papa's Era"</em>, <em>"Papa's Memories"</em>, <em>"90s Chai Time"</em>):
+                </p>
 
-                    <h2>
-                        FAQ
-                    </h2>
-
+                <div class="memory-song-preview">
+                    <img id="memory-modal-img" src="" alt="Song artwork">
+                    <div class="preview-text">
+                        <strong id="memory-modal-orig-title">Original Song Title</strong>
+                        <span id="memory-modal-orig-mode">Era: Nostalgic Radio</span>
+                    </div>
                 </div>
 
+                <div class="glass-input-group">
+                    <label for="custom-title-input">Your Custom Memory Title</label>
+                    <input type="text" id="custom-title-input" class="glass-input" placeholder="e.g. Papa's Memories, 90s monsoon memories..." maxlength="65">
+                </div>
 
-                <button
-                    id="close-faq-button"
-                    class="close-button"
-                    type="button"
-                    title="Close"
-                >
-                    ×
+                <div class="preset-suggestions">
+                    <span class="preset-label">Quick suggestions:</span>
+                    <div class="preset-chips-list">
+                        <button type="button" class="preset-chip">Papa's Memories</button>
+                        <button type="button" class="preset-chip">Papa's Era</button>
+                        <button type="button" class="preset-chip">90s Golden Days</button>
+                        <button type="button" class="preset-chip">Late Night Vibes</button>
+                        <button type="button" class="preset-chip">Childhood Nostalgia</button>
+                    </div>
+                </div>
+
+                <div class="memory-modal-actions">
+                    <button type="button" id="cancel-memory-edit" class="glass-btn-secondary">Cancel</button>
+                    <button type="button" id="save-memory-title" class="glass-btn-primary">Save Memory Title</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="spotify-share-modal" class="memory-modal" aria-hidden="true">
+        <div class="memory-modal-card share-modal-card">
+            <div class="memory-modal-header">
+                <div>
+                    <span class="small-label">SHARE THIS MEMORY</span>
+                    <h3 class="memory-modal-heading">Share Song &amp; Memories</h3>
+                </div>
+                <button id="close-share-modal" class="close-button" type="button" title="Close" aria-label="Close share modal">×</button>
+            </div>
+
+            <div class="memory-modal-body">
+                <div class="share-song-preview">
+                    <img id="share-modal-img" src="" alt="Song Artwork" class="share-preview-thumb">
+                    <div class="preview-text">
+                        <strong id="share-modal-song-title">Song Title</strong>
+                        <span id="share-modal-song-artist">Artist • Era</span>
+                    </div>
+                </div>
+
+                <div class="share-options-grid">
+                    <button type="button" id="share-btn-whatsapp" class="share-channel-btn whatsapp-btn">
+                        <span class="share-icon">💬</span>
+                        <div class="share-channel-text">
+                            <strong>WhatsApp</strong>
+                            <span>Share with contacts</span>
+                        </div>
+                    </button>
+
+                    <button type="button" id="share-btn-telegram" class="share-channel-btn telegram-btn">
+                        <span class="share-icon">✈️</span>
+                        <div class="share-channel-text">
+                            <strong>Telegram</strong>
+                            <span>Send to groups / chats</span>
+                        </div>
+                    </button>
+
+                    <button type="button" id="share-btn-twitter" class="share-channel-btn twitter-btn">
+                        <span class="share-icon">🐦</span>
+                        <div class="share-channel-text">
+                            <strong>Twitter / X</strong>
+                            <span>Post retro memories</span>
+                        </div>
+                    </button>
+
+                    <button type="button" id="share-btn-copy" class="share-channel-btn copy-btn">
+                        <span class="share-icon">🔗</span>
+                        <div class="share-channel-text">
+                            <strong id="share-copy-label">Copy Link</strong>
+                            <span id="share-copy-sub">Copy to clipboard</span>
+                        </div>
+                    </button>
+
+                    <button type="button" id="share-btn-native" class="share-channel-btn native-btn">
+                        <span class="share-icon">📲</span>
+                        <div class="share-channel-text">
+                            <strong>More Options</strong>
+                            <span>System share apps</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="share-link-box">
+                    <input type="text" id="share-link-input" class="glass-input share-input" readonly>
+                    <button type="button" id="share-quick-copy-btn" class="glass-btn-primary quick-copy-btn">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="spotify-player-modal" class="spotify-player-modal" aria-hidden="true">
+        <div class="spotify-backdrop" id="spotify-backdrop"></div>
+        <div class="spotify-sheet-container" id="spotify-sheet-container">
+            
+            <div class="spotify-canvas-backdrop" id="spotify-canvas-backdrop">
+                
+                <div id="youtube-player-container" class="youtube-player-container">
+                    <div id="youtube-player"></div>
+                </div>
+                
+                <img id="spotify-ambient-img" class="spotify-ambient-img" src="/static/images/backgrounds/papa-era.jpeg" alt="">
+                <div class="spotify-canvas-vignette"></div>
+                
+                <div class="spotify-canvas-touch-shield" id="spotify-canvas-touch-shield" title="Tap video to play/pause"></div>
+            </div>
+
+            
+            <header class="spotify-top-bar">
+                <button id="spotify-minimize-btn" class="spotify-header-btn" type="button" title="Minimize Player" aria-label="Minimize Player">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                    </svg>
                 </button>
 
+                <div class="spotify-header-center">
+                    <span class="spotify-header-badge">PLAYING FROM PLAYLIST</span>
+                    <h4 id="spotify-header-era-name" class="spotify-header-title">Papa's Era 📻</h4>
+                </div>
 
+                <div class="spotify-header-right-actions">
+                    
+                    <button id="spotify-art-toggle-btn" class="spotify-art-mode-pill" type="button" title="Switch View: Canvas Video / Album Art / Vinyl">
+                        <span id="spotify-art-mode-icon">🎥</span>
+                        <span id="spotify-art-mode-text">Canvas Video</span>
+                    </button>
+
+                    <button id="spotify-options-btn" class="spotify-header-btn" type="button" title="Options" aria-label="Player Options">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <circle cx="12" cy="5" r="2"/>
+                            <circle cx="12" cy="12" r="2"/>
+                            <circle cx="12" cy="19" r="2"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            
+            <div id="spotify-sticky-header" class="spotify-sticky-header">
+                <div class="spotify-sticky-track">
+                    <h5 id="spotify-sticky-title">Mere Mehboob Qayamat Hogi</h5>
+                    <p id="spotify-sticky-artist">YouTube Music</p>
+                </div>
+                <div class="spotify-sticky-actions">
+                    <button id="spotify-sticky-like-btn" class="spotify-mini-btn" type="button" title="Save to Wishlist">
+                        <svg class="heart-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </button>
+                    <button id="spotify-sticky-play-btn" class="spotify-mini-play-btn" type="button" title="Play/Pause">
+                        <span class="spotify-sticky-play-icon">▶</span>
+                    </button>
+                </div>
             </div>
 
+            
+            <div class="spotify-scroll-viewport" id="spotify-scroll-viewport">
+                
+                <div class="spotify-main-pane">
+                    
+                    <div class="spotify-art-card" id="spotify-art-card">
+                        <img id="spotify-large-art" src="" alt="Song Artwork" class="spotify-art-img">
+                        <div class="spotify-art-glow"></div>
 
+                        
+                        <div class="spotify-vinyl-disc" id="spotify-vinyl-disc">
+                            <div class="vinyl-groove-rings"></div>
+                            <div class="vinyl-center-label">
+                                <img id="spotify-vinyl-label-img" src="" alt="Vinyl Center">
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="faq-list">
+                    
+                    <div class="spotify-meta-section">
+                        <div class="spotify-meta-info">
+                            <div class="spotify-meta-row">
+                                <img id="spotify-meta-thumb" class="spotify-meta-thumb" src="/static/images/backgrounds/papa-era.jpeg" alt="Cover">
+                                <div class="spotify-meta-text-wrap">
+                                    <h2 id="spotify-track-title" class="spotify-track-title">Mere Mehboob Qayamat Hogi</h2>
+                                    <p id="spotify-track-artist" class="spotify-track-artist">Kishore Kumar • Mr. X in Bombay</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="spotify-like-btn" class="spotify-heart-btn" type="button" title="Save to Memories Wishlist" aria-label="Save song to memories wishlist">
+                            <svg class="heart-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                        </button>
+                    </div>
 
+                    
+                    <div class="spotify-progress-wrap">
+                        <div class="spotify-progress-bar-container">
+                            <div id="spotify-progress-fill" class="spotify-progress-fill"></div>
+                            <input id="spotify-progress-slider" class="spotify-progress-slider" type="range" min="0" max="100" value="0" aria-label="Song progress">
+                        </div>
+                        <div class="spotify-time-labels">
+                            <span id="spotify-time-current">0:00</span>
+                            <span id="spotify-time-total">0:00</span>
+                        </div>
+                    </div>
 
-                <details>
+                    
+                    <div class="spotify-controls-panel">
+                        
+                        <button id="spotify-shuffle-btn" class="spotify-ctrl-icon-btn" type="button" title="Shuffle Era Tracks">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+                            </svg>
+                        </button>
 
-                    <summary>
-                        How does the radio work?
-                    </summary>
+                        
+                        <button id="spotify-prev-btn" class="spotify-ctrl-icon-btn nav-btn" type="button" title="Previous Song">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                            </svg>
+                        </button>
 
-                    <p>
-                        Select a music mode and the
-                        corresponding playlist will play.
-                    </p>
+                        
+                        <button id="spotify-play-btn" class="spotify-main-play-btn" type="button" title="Play">
+                            <span id="spotify-play-icon" class="spotify-play-icon">▶</span>
+                        </button>
 
-                </details>
+                        
+                        <button id="spotify-next-btn" class="spotify-ctrl-icon-btn nav-btn" type="button" title="Next Song">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                            </svg>
+                        </button>
 
+                        
+                        <button id="spotify-repeat-btn" class="spotify-ctrl-icon-btn" type="button" title="Loop Track">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+                            </svg>
+                        </button>
 
+                        
+                        <button id="spotify-timer-btn" class="spotify-ctrl-icon-btn timer-btn" type="button" title="Sleep Timer (15m, 30m, 45m, 60m)">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
+                            </svg>
+                            <span id="spotify-timer-badge" class="spotify-timer-badge" style="display: none;">30m</span>
+                        </button>
+                    </div>
 
-                <details>
+                    
+                    <div class="spotify-utility-row">
+                        <button id="spotify-visualizer-btn" class="spotify-util-btn" type="button" title="Audio Visualizer">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M20 6H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10zM12 10c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                            </svg>
+                        </button>
 
-                    <summary>
-                        Where does the music come from?
-                    </summary>
+                        
+                        <button id="spotify-crackle-btn" class="spotify-util-btn crackle-btn" type="button" title="Toggle Warm Vinyl Crackle & Tape Hiss">
+                            <span class="crackle-icon">📻</span>
+                            <span class="crackle-text">Vinyl Hiss</span>
+                        </button>
 
-                    <p>
-                        Music is played through
-                        YouTube's embedded player.
-                    </p>
+                        <button id="spotify-share-btn" class="spotify-util-btn" type="button" title="Share Song Link">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                            </svg>
+                        </button>
 
-                </details>
+                        <button id="spotify-queue-btn" class="spotify-util-btn" type="button" title="View Eras & Modes">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
 
+                
+                <div class="spotify-lyrics-card" id="spotify-lyrics-card">
+                    <div class="lyrics-header">
+                        <span class="lyrics-tag">Lyrics preview</span>
+                    </div>
+                    <div class="lyrics-body" id="spotify-lyrics-lines">
+                        
+                        <p class="lyric-line">Pal bhar thahar jaao, dil yeh sambhal jaaye...</p>
+                        <p class="lyric-line highlight">Main chaahoon tujh ko, meri jaan, bepanaah</p>
+                        <p class="lyric-line">Zara sa khwaabon mein sajaa tu</p>
+                        <p class="lyric-line">Zara sa yaadon mein basaa</p>
+                    </div>
+                    <button id="spotify-toggle-lyrics-btn" class="spotify-pill-action-btn" type="button">
+                        Show lyrics
+                    </button>
+                </div>
 
+                
+                <div class="spotify-nostalgia-diary-card" id="spotify-nostalgia-diary">
+                    <div class="diary-header">
+                        <span class="diary-badge">📻 AAKASHVANI &amp; VIVIDH BHARATI YAADEIN</span>
+                        <button id="diary-next-trivia-btn" class="diary-next-btn" type="button" title="Read another nostalgic memory">
+                            Next Memory ✨
+                        </button>
+                    </div>
+                    <div class="diary-body">
+                        <p class="diary-story" id="diary-story-text">
+                            "Mohammad Rafi aur Kishore Kumar ke zamaane mein transistor radio par 'Aapki Farmaish' sunne ke liye poora mohalla shaam ko ek jagah baithta tha..."
+                        </p>
+                        <div class="diary-dedication-box" id="diary-dedication-box">
+                            <div class="dedication-left">
+                                <span class="dedication-icon">☕</span>
+                                <span id="diary-dedication-text" class="dedication-text">Dedicated to: Papa's chai time &amp; monsoon memories</span>
+                            </div>
+                            <button id="diary-edit-dedication-btn" class="dedication-action-btn" type="button">Dedicate</button>
+                        </div>
+                    </div>
+                </div>
 
-                <details>
+                
+                <div class="spotify-explore-section">
+                    <div class="explore-section-header">
+                        <div class="explore-header-left">
+                            <span class="spotify-sub-tag">NEXT IN QUEUE</span>
+                            <h3 id="spotify-explore-title" class="explore-headline">Up Next • Agle Gaane</h3>
+                        </div>
+                        <span id="spotify-queue-count" class="queue-count-pill">Upcoming Songs</span>
+                    </div>
+                    <div class="spotify-cards-horizontal" id="spotify-explore-cards">
+                        
+                    </div>
+                </div>
 
-                    <summary>
-                        Can I change the appearance?
-                    </summary>
-
-                    <p>
-                        Yes. Open Settings and choose
-                        Glass, Solid or Auto.
-                    </p>
-
-                </details>
-
-
-
-                <details>
-
-                    <summary>
-                        Can I turn the rain off?
-                    </summary>
-
-                    <p>
-                        Yes. Use the rain button in
-                        the top-right corner.
-                    </p>
-
-                </details>
-
-
-
-                <details>
-
-                    <summary>
-                        What is Screensaver mode?
-                    </summary>
-
-                    <p>
-                        Screensaver mode creates a
-                        distraction-free cinematic view
-                        for listening.
-                    </p>
-
-                </details>
-
-
+                
+                <div class="spotify-credits-section">
+                    <div class="credits-header">
+                        <h3 class="credits-headline">Credits</h3>
+                        <button id="spotify-credits-all-btn" class="credits-all-btn" type="button">Show all</button>
+                    </div>
+                    <div class="credits-cards-list" id="spotify-credits-list">
+                        
+                    </div>
+                </div>
             </div>
-
-
         </div>
-
-
-    </aside>
-
-
-
-    <!-- =========================
-         FOOTER
-    ========================== -->
-
-    <footer class="site-footer">
-
-    <div class="footer-main">
-
-        <p class="footer-brand">
-            NOSTALGIC RADIO
-        </p>
-
-        <p class="footer-tagline">
-            Music, memories &amp; moments.
-        </p>
-
     </div>
 
 
-    <div class="footer-creator">
+    <div id="spotify-queue-modal" class="spotify-queue-modal" aria-hidden="true">
+        <div class="spotify-queue-backdrop" id="spotify-queue-backdrop"></div>
+        <div class="spotify-queue-sheet" id="spotify-queue-sheet">
+            <div class="queue-sheet-handle"></div>
 
-        <span class="footer-created">
-            Created by
-        </span>
+            <div class="spotify-queue-header">
+                <div>
+                    <span class="queue-sub-tag">PLAYBACK QUEUE</span>
+                    <h2 class="queue-title">Aane Wale Gaane • Queue</h2>
+                </div>
+                <div class="queue-header-actions">
+                    <button id="queue-clear-btn" class="queue-clear-btn" type="button" title="Clear your queue">Clear</button>
+                    <button id="queue-close-btn" class="queue-close-btn" type="button" title="Close Queue">×</button>
+                </div>
+            </div>
 
-        <span class="footer-name">
-            Sandeep Patra
-        </span>
 
-        <a
-            class="footer-email"
-            href="mailto:snxuuuu@gmail.com"
-        >
-            snxuuuu@gmail.com
-        </a>
+            <div class="queue-add-box">
+                <input id="queue-custom-input" class="queue-custom-input" type="text" placeholder="Gaane ka naam ya YouTube video link daalein..." autocomplete="off">
+                <button id="queue-custom-add-btn" class="queue-add-btn" type="button">
+                    <span>+ Add to Queue</span>
+                </button>
+            </div>
 
+            <div class="queue-scroll-body">
+
+                <div class="queue-section">
+                    <div class="queue-section-title">
+                        <span>NOW PLAYING</span>
+                        <div class="queue-eq-bars">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="queue-now-playing-card" id="queue-now-playing-card">
+                        <img id="queue-now-art" class="queue-item-thumb" src="/static/images/logo.png" alt="Playing Song">
+                        <div class="queue-item-info">
+                            <span id="queue-now-title" class="queue-item-title">Song Title</span>
+                            <span id="queue-now-artist" class="queue-item-artist">Artist • Era</span>
+                        </div>
+                        <span class="queue-live-pill">PLAYING</span>
+                    </div>
+                </div>
+
+                
+                <div class="queue-section">
+                    <div class="queue-section-title">
+                        <span>YOUR QUEUE (PEHLE YEH BAJENGE)</span>
+                        <span id="user-queue-count" class="queue-count-badge">0 songs</span>
+                    </div>
+                    <div id="user-queue-list" class="queue-items-list">
+                        <p class="queue-empty-msg" id="queue-empty-msg">Aapne abhi koi gaana queue mein nahi dala. Neeche se gaane "+ Queue" karein!</p>
+                    </div>
+                </div>
+
+                
+                <div class="queue-section">
+                    <div class="queue-section-title">
+                        <span id="era-queue-section-title">NEXT FROM ERA PLAYLIST</span>
+                    </div>
+                    <div id="era-queue-list" class="queue-items-list">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
-    <div class="footer-bottom">
+    <div id="spotify-options-modal" class="spotify-options-modal" aria-hidden="true">
+        <div class="spotify-options-backdrop" id="spotify-options-backdrop"></div>
+        <div class="spotify-options-sheet">
+            <div class="options-sheet-handle"></div>
 
-        <span>
-            Made with ❤️ Sandeepuja
-        </span>
+            <div class="options-song-header">
+                <img id="options-song-art" class="options-song-thumb" src="/static/images/logo.png" alt="Song Artwork">
+                <div class="options-song-info">
+                    <h3 id="options-song-title" class="options-song-title">Song Title</h3>
+                    <p id="options-song-artist" class="options-song-artist">Artist • Era</p>
+                </div>
+            </div>
 
-        <span class="footer-dot">
-            •
-        </span>
+            <div class="options-actions-list">
+                <button id="opt-action-like" class="options-action-item" type="button">
+                    <span class="action-icon">❤️</span>
+                    <div class="action-text">
+                        <span class="action-title" id="opt-action-like-title">Save to Memories Wishlist</span>
+                        <span class="action-desc">Add this song to your personal wishlist</span>
+                    </div>
+                </button>
 
-        <span>
-            Keep the memories playing.
-        </span>
+                <button id="opt-action-memory-title" class="options-action-item" type="button">
+                    <span class="action-icon">✍️</span>
+                    <div class="action-text">
+                        <span class="action-title">Rename / Custom Memory Title</span>
+                        <span class="action-desc">Give this song a personal nostalgic nickname</span>
+                    </div>
+                </button>
 
+                <button id="opt-action-queue" class="options-action-item" type="button">
+                    <span class="action-icon">📑</span>
+                    <div class="action-text">
+                        <span class="action-title">Open Playback Queue</span>
+                        <span class="action-desc">View and manage upcoming queued songs</span>
+                    </div>
+                </button>
+
+                <button id="opt-action-share" class="options-action-item" type="button">
+                    <span class="action-icon">📤</span>
+                    <div class="action-text">
+                        <span class="action-title">Share Song</span>
+                        <span class="action-desc">Share to WhatsApp, Telegram or Copy Link</span>
+                    </div>
+                </button>
+
+                <button id="opt-action-era" class="options-action-item" type="button">
+                    <span class="action-icon">📻</span>
+                    <div class="action-text">
+                        <span class="action-title">Change Era / Station</span>
+                        <span class="action-desc">Browse 90s, Papa's Era, Lo-fi and more</span>
+                    </div>
+                </button>
+
+                <button id="opt-action-timer" class="options-action-item" type="button">
+                    <span class="action-icon">🌙</span>
+                    <div class="action-text">
+                        <span class="action-title" id="opt-action-timer-title">Sleep Timer (Off)</span>
+                        <span class="action-desc">Auto stop radio after 15, 30, 45, or 60 min</span>
+                    </div>
+                </button>
+
+                <button id="opt-action-crackle" class="options-action-item" type="button">
+                    <span class="action-icon">📻</span>
+                    <div class="action-text">
+                        <span class="action-title" id="opt-action-crackle-title">Warm Vinyl Crackle</span>
+                        <span class="action-desc">Toggle vintage cassette hiss & vinyl crackle</span>
+                    </div>
+                </button>
+            </div>
+
+            <button id="options-close-btn" class="options-cancel-btn" type="button">Cancel</button>
+        </div>
     </div>
 
-</footer>
+
+    <div id="liked-options-modal" class="spotify-options-modal liked-options-modal" aria-hidden="true">
+        <div class="spotify-options-backdrop" id="liked-options-backdrop"></div>
+        <div class="spotify-options-sheet liked-options-sheet">
+            <div class="options-sheet-handle"></div>
+
+            <div class="options-song-header">
+                <img id="liked-options-thumb" class="options-song-thumb" src="/static/images/backgrounds/papa-era.jpeg" alt="Liked Cover Art">
+                <div class="options-song-info">
+                    <h3 class="options-song-title">Liked Songs</h3>
+                    <p id="liked-options-subtitle" class="options-song-artist">0 songs • Retro Memories</p>
+                </div>
+            </div>
+
+            <div class="options-actions-list">
+                <button id="liked-opt-play-all" class="options-action-item" type="button">
+                    <span class="action-icon">▶️</span>
+                    <div class="action-text">
+                        <span class="action-title">Play All</span>
+                        <span class="action-desc">Start playing liked songs from beginning</span>
+                    </div>
+                </button>
+
+                <button id="liked-opt-shuffle" class="options-action-item" type="button">
+                    <span class="action-icon">🔀</span>
+                    <div class="action-text">
+                        <span class="action-title">Shuffle Playlist</span>
+                        <span class="action-desc">Play all saved songs in random order</span>
+                    </div>
+                </button>
+
+                <button id="liked-opt-edit-title" class="options-action-item" type="button">
+                    <span class="action-icon">✍️</span>
+                    <div class="action-text">
+                        <span class="action-title">Custom Memory Title</span>
+                        <span class="action-desc">Add or change personal nostalgic nickname</span>
+                    </div>
+                </button>
+
+                <button id="liked-opt-share" class="options-action-item" type="button">
+                    <span class="action-icon">📤</span>
+                    <div class="action-text">
+                        <span class="action-title">Share Liked Playlist</span>
+                        <span class="action-desc">Share your favorite retro playlist</span>
+                    </div>
+                </button>
+
+                <button id="liked-opt-sort" class="options-action-item" type="button">
+                    <span class="action-icon">🔄</span>
+                    <div class="action-text">
+                        <span class="action-title">Sort Playlist</span>
+                        <span class="action-desc">Sort by date added, title, or artist</span>
+                    </div>
+                </button>
+
+                <button id="liked-opt-clear-all" class="options-action-item danger" type="button">
+                    <span class="action-icon">🗑️</span>
+                    <div class="action-text">
+                        <span class="action-title" style="color: #ff6b6b;">Clear All Liked Songs</span>
+                        <span class="action-desc">Remove all songs from your liked collection</span>
+                    </div>
+                </button>
+            </div>
+
+            <button id="liked-options-close-btn" class="options-cancel-btn" type="button">Cancel</button>
+        </div>
+    </div>
 
 
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
-    <!-- =========================
-         YOUTUBE PLAYER
-    ========================== -->
 
-    <div
-        id="youtube-player-container"
-        class="youtube-player-container"
-    >
+    <script>
+        async function updateOnlineCount() {
+            try {
+                const response = await fetch("/api/presence/heartbeat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
 
-        <div id="youtube-player"></div>
+                if (!response.ok) {
+                    throw new Error("Presence request failed");
+                }
+
+                const data = await response.json();
+
+                const onlineCount = document.getElementById("online-count");
+
+                if (onlineCount && data && typeof data.online !== "undefined") {
+                    onlineCount.textContent = data.online;
+                }
+
+            } catch (error) {
+                console.error("Online count update failed:", error);
+            }
+        }
+
+        updateOnlineCount();
+
+
+        setInterval(updateOnlineCount, 10000);
+    </script>
 
     </div>
 
 
 </main>
-
 {% endblock %}

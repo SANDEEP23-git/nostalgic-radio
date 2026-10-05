@@ -18,38 +18,42 @@
         {% endblock %}
     </title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='css/style.css') }}"
     >
 </head>
 
-<body>
+<body data-open-modal="{{ open_modal or '' }}">
 
-    <!-- Main website content -->
+
+    <script>
+        window.SERVER_AUTH = {
+            isAuthenticated: {{ 'true' if is_authenticated else 'false' }},
+            user: {{ current_user_json | safe if current_user_json else 'null' }}
+        };
+    </script>
+
+
     {% block content %}
     {% endblock %}
 
 
-    <!-- Main JavaScript -->
-    <!-- YouTube IFrame Player API -->
-
-<!-- Main JavaScript -->
-<script
-    src="{{ url_for('static', filename='js/main.js') }}"
-></script>
-
-<!-- Player JavaScript -->
-<script
-    src="{{ url_for('static', filename='js/theme.js') }}"
-></script>
-<script
-    src="{{ url_for('static', filename='js/player.js') }}"
-></script>
-<script
-    src="{{ url_for('static', filename='js/rain.js') }}"
-></script>
-<script src="https://www.youtube.com/iframe_api"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/rain.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/stack.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/wishlist.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/spotify-player.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/glow.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/loader.js') }}"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 
 </html>
