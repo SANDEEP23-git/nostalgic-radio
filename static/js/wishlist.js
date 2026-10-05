@@ -147,42 +147,115 @@
         updateWishlistCounters();
         renderLikedPageView();
         renderMemoriesPageView();
+
+        setupLiveSync();
+        window.syncLocalWishlistWithDatabase = () => syncWithServer(true);
+        window.refreshWishlistFromServer = () => syncWithServer(true);
     }
 
     /* =========================================================
        LOAD WISHLIST (LOCALSTORAGE + MONGODB SYNC)
        ========================================================= */
 
+    let isLiveSyncing = false;
+
+    async function syncWithServer(forceRender = false) {
+        if (isLiveSyncing || !isLoggedIn()) return;
+        isLiveSyncing = true;
+        try {
+            const data = await apiRequest("/api/wishlist");
+            const serverItems = Array.isArray(data.wishlist) ? data.wishlist.map(normalizeWishlistItem) : [];
+
+            // De-duplicate server items by videoId
+            const seenIds = new Set();
+            const uniqueServer = [];
+            for (const item of serverItems) {
+                if (item && item.videoId && !seenIds.has(item.videoId)) {
+                    seenIds.add(item.videoId);
+                    uniqueServer.push(item);
+                }
+            }
+
+            // Fingerprint to check if anything changed between devices
+            const curSig = wishlist.map(w => `${w.videoId}:${w.customTitle || ""}`).join("|");
+            const newSig = uniqueServer.map(w => `${w.videoId}:${w.customTitle || ""}`).join("|");
+
+            if (curSig !== newSig || forceRender) {
+                wishlist = uniqueServer;
+                saveLocalWishlist(wishlist);
+                updateWishlistCounters();
+                updateLikeButtonState();
+                renderWishlistItems();
+                renderLikedPageView();
+            }
+        } catch (e) {
+            // Ignore background fetch network hiccups
+        } finally {
+            isLiveSyncing = false;
+        }
+    }
+
+    function setupLiveSync() {
+        // 1. Sync on window focus and tab visibility (when switching between apps or unlocking phone)
+        window.addEventListener("focus", () => syncWithServer(true));
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                syncWithServer(true);
+            }
+        });
+
+        // 2. Sync on auth changes
+        window.addEventListener("auth-state-changed", () => {
+            syncWithServer(true);
+        });
+
+        // 3. Heartbeat live sync every 4 seconds across laptop and mobile
+        setInterval(() => {
+            syncWithServer(false);
+        }, 4000);
+    }
+
     async function loadWishlist() {
-        // 1. Immediately read from localStorage
+        // 1. Immediately read from localStorage for fast initial render
         const local = getLocalWishlist();
         if (local && local.length > 0) {
-            wishlist = local;
+            const seen = new Set();
+            wishlist = local.filter(item => {
+                if (!item || !item.videoId || seen.has(item.videoId)) return false;
+                seen.add(item.videoId);
+                return true;
+            });
         }
 
-        // 2. If logged in, fetch from MongoDB and sync
+        // 2. If logged in, fetch authoritative wishlist from MongoDB
         if (isLoggedIn()) {
             try {
+                // First sync any guest songs created before logging in
+                const guestRaw = localStorage.getItem("nostalgic_guest_wishlist");
+                if (guestRaw) {
+                    try {
+                        const guestItems = JSON.parse(guestRaw);
+                        if (Array.isArray(guestItems) && guestItems.length > 0) {
+                            await apiRequest("/api/wishlist/sync", {
+                                method: "POST",
+                                body: JSON.stringify({ songs: guestItems })
+                            });
+                        }
+                    } catch (e) {}
+                    localStorage.removeItem("nostalgic_guest_wishlist");
+                }
+
+                // Fetch database records
                 const data = await apiRequest("/api/wishlist");
                 const serverItems = Array.isArray(data.wishlist) ? data.wishlist.map(normalizeWishlistItem) : [];
 
-                // Check for local items that need to be synced to DB
-                const serverIds = new Set(serverItems.map(s => s.videoId));
-                const unsynced = (local || []).filter(item => item && item.videoId && !serverIds.has(item.videoId));
+                const seenIds = new Set();
+                wishlist = serverItems.filter(item => {
+                    if (!item || !item.videoId || seenIds.has(item.videoId)) return false;
+                    seenIds.add(item.videoId);
+                    return true;
+                });
 
-                if (unsynced.length > 0) {
-                    try {
-                        await apiRequest("/api/wishlist/sync", {
-                            method: "POST",
-                            body: JSON.stringify({ songs: unsynced })
-                        });
-                        unsynced.forEach(s => serverItems.push(s));
-                    } catch (syncErr) {
-                        console.warn("Could not sync local items to DB:", syncErr);
-                    }
-                }
-
-                wishlist = serverItems;
                 saveLocalWishlist(wishlist);
             } catch (error) {
                 console.warn("Could not load wishlist from server, using local cache:", error);
@@ -714,11 +787,6 @@
                 return;
             }
 
-            wishlist.splice(
-                existingIndex,
-                1
-            );
-
             updateWishlistCounters();
             renderWishlistItems();
             renderLikedPageView();
@@ -774,10 +842,6 @@
         if (!success) {
             return;
         }
-
-        wishlist.unshift(
-            newItem
-        );
 
         updateWishlistCounters();
         renderWishlistItems();
@@ -1054,6 +1118,16 @@
        ========================================================= */
 
     function renderWishlistItems() {
+        // De-duplicate in-memory wishlist by videoId
+        const seen = new Set();
+        const unique = [];
+        for (const it of wishlist) {
+            if (it && it.videoId && !seen.has(it.videoId)) {
+                seen.add(it.videoId);
+                unique.push(it);
+            }
+        }
+        wishlist = unique;
 
         const container =
             document.getElementById(
@@ -1663,6 +1737,7 @@
 
             songBeingEdited.customTitle =
                 newTitle;
+            saveLocalWishlist(wishlist);
 
             closeMemoryModal();
 
@@ -1819,6 +1894,21 @@
     }
 
     function renderLikedPageView() {
+        // Trigger background live-sync when viewing Liked page
+        if (typeof syncWithServer === "function" && isLoggedIn()) {
+            syncWithServer(false);
+        }
+
+        // De-duplicate in-memory wishlist by videoId
+        const seen = new Set();
+        const unique = [];
+        for (const it of wishlist) {
+            if (it && it.videoId && !seen.has(it.videoId)) {
+                seen.add(it.videoId);
+                unique.push(it);
+            }
+        }
+        wishlist = unique;
 
         const heroArtwork =
             document.getElementById(
